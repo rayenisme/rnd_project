@@ -151,10 +151,6 @@
                                         </a>
                                     </td>
                                 </tr>
-                                {{-- @empty
-                                <tr>
-                                    <td colspan="7" class="text-center">Data tidak ditemukan</td>
-                                </tr> --}}
                             @endforelse
                         </tbody>
                     </table>
