@@ -1,5 +1,7 @@
 /vendor
 /node_modules
 /tests
-/storage
+/storage/logs
+/storage/framework/views/*.php
 .git
+.env
