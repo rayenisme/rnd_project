@@ -20,7 +20,7 @@
                     <img src="{{ URL::asset('build/images/brands/R&D-sm.svg') }}" alt="logo-sm-light" height="9">
                 </span>
                 <span class="logo-lg">
-                    <img src="{{ URL::asset('build/images/r&d.svg') }}" alt="logo-light" height="9">
+                    <img src="{{ URL::asset('build/images/brands/r&d.svg') }}" alt="logo-light" height="9">
                 </span>
             </a>
 
