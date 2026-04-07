@@ -150,6 +150,7 @@
                                             detail
                                         </a>
                                     </td>
+
                                 </tr>
                             @endforelse
                         </tbody>
