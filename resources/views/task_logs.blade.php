@@ -153,7 +153,7 @@
                                                                 target="_blank">
                                                                 <img src="{{ Storage::disk('s3')->url($log->image) }}"
                                                                     class="rounded image-preview"
-                                                                    style="width:100%; height:150px; object-fit:cover;">
+                                                                    style="width:80px; height:80px; object-fit:cover;">
                                                             </a>
                                                         @endif
 
