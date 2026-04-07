@@ -20,7 +20,7 @@
                         <span>Document</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ url('event') }}"><i class="mdi mdi-circle-outline"></i>
+                        <li><a href="{{ url('/event') }}"><i class="mdi mdi-circle-outline"></i>
                                 Event</a></li>
                     </ul>
                 </li>

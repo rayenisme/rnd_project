@@ -7,7 +7,7 @@ use App\Http\Controllers\TaskLogsController;
 
 Route::get('/', [HomeController::class, 'root']);
 Route::get('/index', [HomeController::class, 'index']);
-Route::get('/event', [HomeController::class, 'event'])->name('index');
+Route::get('/event', [HomeController::class, 'event']);
 Route::post('/event', [TasksController::class, 'store'])->name('tasks.store');
 Route::get('/event/{id}', [TasksController::class, 'show'])->name('event.show');
 Route::post('/event/{id}', [TaskLogsController::class, 'store'])->name('event.store');
