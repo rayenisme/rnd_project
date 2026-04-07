@@ -229,7 +229,7 @@
                                     class="btn btn-danger {{ $task->status == 'Clear' ? 'd-none' : '' }}"
                                     id="resetDescription">Reset</button>
                             </div>
-                            <a href="{{ route('index') }}" class="btn btn-secondary">Kembali</a>
+                            <a href="{{ route('/event') }}" class="btn btn-secondary">Kembali</a>
                         </div>
                 </div>
                 </form>
