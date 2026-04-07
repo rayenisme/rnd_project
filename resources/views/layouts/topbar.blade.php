@@ -8,16 +8,16 @@
         <div class="navbar-logo-box">
             <a href="{{ url('index') }}" class="logo logo-dark">
                 <span class="logo-sm">
-                    <img src="{{ URL::asset('build/images/r&d-sm.svg') }}" alt="logo-sm-dark" height="9">
+                    <img src="{{ URL::asset('build/images/brands/r&d-sm.svg') }}" alt="logo-sm-dark" height="9">
                 </span>
                 <span class="logo-lg">
-                    <img src="{{ URL::asset('build/images/r&d.svg') }}" alt="logo-dark" height="9">
+                    <img src="{{ URL::asset('build/images/brands/r&d.svg') }}" alt="logo-dark" height="9">
                 </span>
             </a>
 
             <a href="{{ url('index') }}" class="logo logo-light">
                 <span class="logo-sm">
-                    <img src="{{ URL::asset('build/images/r&d-sm.svg') }}" alt="logo-sm-light" height="9">
+                    <img src="{{ URL::asset('build/images/brands/r&d-sm.svg') }}" alt="logo-sm-light" height="9">
                 </span>
                 <span class="logo-lg">
                     <img src="{{ URL::asset('build/images/r&d.svg') }}" alt="logo-light" height="9">
@@ -56,7 +56,7 @@
                 <!--End App Search-->
 
                 <!-- Start Notification -->
-                <div class="dropdown d-inline-block">
+                {{-- <div class="dropdown d-inline-block">
                     <button type="button" class="btn btn-sm top-icon" id="page-header-notifications-dropdown"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-bell align-middle"></i>
@@ -180,16 +180,16 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 <!-- End Notification -->
 
                 <!-- Start Activities -->
-                <div class="d-inline-block activities">
+                {{-- <div class="d-inline-block activities">
                     <button type="button" class="btn btn-sm top-icon" data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvas-rightsidabar">
                         <i class="fas fa-table align-middle"></i>
                     </button>
-                </div>
+                </div> --}}
                 <!-- End Activities -->
 
                 <!-- Start Profile -->

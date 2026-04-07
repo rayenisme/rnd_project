@@ -9,8 +9,8 @@
     <link href="{{ URL::asset('build/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet"
         type="text/css" />
 
-    <!-- searchpanes datatable examples -->
-    <link href="{{ URL::asset('build/libs/datatables.net-searchpanes-bs5/css/searchPanes.bootstrap5.min.css') }}"
+    <!-- Responsive datatable examples -->
+    <link href="{{ URL::asset('build/libs/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css') }}"
         rel="stylesheet" type="text/css" />
 
     <!-- Responsive datatable -->
@@ -116,8 +116,7 @@
                     </div>
                     {{-- Modal End --}}
 
-                    <table id="datatable-searchpanes"
-                        class="table table-hover table-bordered table-striped dt-responsive nowrap"
+                    <table id="datatable" class="table table-hover table-bordered table-striped dt-responsive nowrap"
                         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
@@ -171,18 +170,12 @@
     <script src="{{ URL::asset('build/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ URL::asset('build/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
 
-    <!-- searchpanes examples -->
-    <script src="{{ URL::asset('build/libs/datatables.net-searchpanes/js/dataTables.searchPanes.min.js') }}"></script>
-    <script src="{{ URL::asset('build/libs/datatables.net-searchpanes-bs5/js/searchPanes.bootstrap5.min.js') }}"></script>
-
-    <!-- select example -->
-    <script src="{{ URL::asset('build/libs/datatables.net-select/js/dataTables.select.min.js') }}"></script>
     <!-- Responsive examples -->
     <script src="{{ URL::asset('build/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ URL::asset('build/libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
 
-    <!-- datatables-extension init js -->
-    <script src="{{ URL::asset('build/js/pages/datatables-extension.init.js') }}"></script>
+    <!-- Datatable init js -->
+    <script src="{{ URL::asset('build/js/pages/datatables-base.init.js') }}"></script>
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
 
     <!-- Sweet Alerts js -->
