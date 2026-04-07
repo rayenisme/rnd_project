@@ -148,17 +148,18 @@
                                                         @endif
 
                                                         @if ($log->image)
-                                                            <img src="{{ Storage::disk('s3')->url($log->image) }}"
-                                                                class="rounded mt-2"
-                                                                style="width:85px; height:85px; object-fit:cover; cursor:pointer;"
-                                                                data-bs-toggle="modal" data-bs-target="#imageModal"
-                                                                onclick="openModal(this.src)">
+                                                            <div class="col-3 mb-3">
+                                                                <img src="{{ Storage::disk('s3')->url($log->image) }}"
+                                                                    class="rounded image-preview"
+                                                                    style="width:100%; height:150px; object-fit:cover;"
+                                                                    onclick="openModal(this.src)">
+                                                            </div>
                                                             <div class="modal fade" id="imageModal" tabindex="-1">
                                                                 <div class="modal-dialog modal-dialog-centered"
-                                                                    style="width: fit-content">
+                                                                    style="width: fit-content;">
                                                                     <div class="modal-content bg-transparent border-0">
                                                                         <div class="modal-body text-center p-0">
-                                                                            <img id="previewImage" src=""
+                                                                            <img id="previewImage"
                                                                                 style="max-height:90vh; width:auto; max-width:100%; object-fit:contain;">
                                                                         </div>
                                                                     </div>
@@ -542,9 +543,10 @@
 
     <script>
         function openModal(src) {
-            const img = document.getElementById('previewImage');
-            img.src = src;
+            const preview = document.getElementById('previewImage');
+            preview.src = src; // set gambar
 
+            // buka modal setelah src siap
             const modal = new bootstrap.Modal(document.getElementById('imageModal'));
             modal.show();
         }
