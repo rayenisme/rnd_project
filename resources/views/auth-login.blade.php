@@ -40,8 +40,8 @@
                                 <div class="input-group auth-form-group-custom mb-3">
                                     <span class="input-group-text bg-primary bg-opacity-10 fs-16" id="basic-addon2"><i
                                             class="mdi mdi-lock-outline auti-custom-input-icon"></i></span>
-                                    <input type="password" class="form-control" id="userpassword"
-                                        placeholder="admin123" aria-label="Username" aria-describedby="basic-addon1">
+                                    <input type="password" class="form-control" id="userpassword" placeholder="admin123"
+                                        aria-label="Username" aria-describedby="basic-addon1">
                                 </div>
 
                                 <div class="mb-sm-5">
@@ -61,7 +61,7 @@
                                 </div>
 
                                 <div class="mt-3 text-center">
-                                    <p class="mb-0">Don't have an account ? <a href="{{ url('auth-register') }}"
+                                    <p class="mb-0">Don't have an account ? <a href="{{ url('/register') }}"
                                             class="fw-medium text-primary"> Register </a> </p>
                                 </div>
 

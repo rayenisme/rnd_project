@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use App\Models\TaskLogs;
 use App\Models\Tasks;
 use Illuminate\Http\Request;
+use Intervention\Image\Encoders\JpegEncoder;
 
 class TaskLogsController extends Controller
 {
@@ -12,52 +17,73 @@ class TaskLogsController extends Controller
 
 public function store(Request $request)
 {
-    $request->validate([
-        'task_id' => 'required',
-        'description' => 'required',
-        'note' => 'nullable',
-        'image' => 'nullable|image'
+    $validated = $request->validate([
+        'task_id'     => 'required|exists:tasks,id',
+        'description' => 'required|string|min:10',
+        'note'        => 'nullable|string',
+        'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
     ]);
 
-    $imagePath = null;
+    DB::beginTransaction();
 
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('task_logs', 'public');
-    }
+    try {
+        $imagePath = null;
 
-    TaskLogs::create([
-        'task_id' => $request->task_id,
-        'log_date' => now(),
-        'description' => $request->description,
-        'note' => $request->note ?? null,
-        'image' => $imagePath
-    ]);
+        // ✅ HANDLE IMAGE
+        if ($request->hasFile('image')) {
 
-    $message = 'Timeline telah diupdate';
+            $image    = $request->file('image');
+            $filename = uniqid() . '.jpg';
 
-    if ($request->is_clear) {
+            $manager = new ImageManager(new Driver());
 
-        $task = Tasks::find($request->task_id);
+            $img = $manager->decode($image)->orient();
 
-        if ($task->status != 'Clear') {
+            $img->scale(width: 1200);
 
-            $task->update(['status' => 'Clear']);
+            $encoded = $img->encode(new JpegEncoder(quality: 80));
 
-            TaskLogs::create([
-                'task_id' => $request->task_id,
-                'log_date' => now(),
-                'description' => 'Event telah diselesaikan',
-                'note' => $request->note ?? null,
-                'image' => null
-            ]);
+            Storage::disk('public')->put('task_logs/' . $filename, $encoded);
 
-            $message = 'Event telah selesai';
-        } else {
-            $message = 'Event sudah dalam status selesai';
+            $imagePath = 'task_logs/' . $filename;
         }
-    }
 
-    return redirect()->back()->with('success', $message);
+        $description = $validated['description'];
+        $message = 'Timeline telah diupdate';
+
+        if ($request->has('is_clear')) {
+
+            $task = Tasks::findOrFail($validated['task_id']);
+
+            if ($task->status !== 'Clear') {
+                $task->update(['status' => 'Clear']);
+
+                $description .= ' (Clear)';
+
+                $message = 'Event telah selesai';
+            } else {
+                $message = 'Event sudah dalam status selesai';
+            }
+        }
+
+        TaskLogs::create([
+            'task_id'     => $validated['task_id'],
+            'log_date'    => now(),
+            'description' => $description,
+            'note'        => $validated['note'] ?? null,
+            'image'       => $imagePath,
+        ]);
+
+        DB::commit();
+
+        return redirect()->back()->with('success', $message);
+
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+    }
 }
 
 public function updateDescription(Request $request, $id)

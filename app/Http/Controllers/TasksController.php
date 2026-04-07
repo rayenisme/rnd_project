@@ -7,6 +7,7 @@ use App\Models\Tasks;
 use App\Models\TaskLogs;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class TasksController extends Controller
 {
@@ -45,9 +46,10 @@ public function store(Request $request)
         return redirect()->back()->with('success', 'Event Telah berhasil ditambahkan!');
 
     } catch (\Exception $e) {
-        \Log::error('Gagal menambahkan Task: ' . $e->getMessage(), [
-            'request' => $request->all()
-        ]);
+        Log::error('Gagal menambahkan Event', [
+        'error'   => $e->getMessage(),
+        'request' => $request->all(),
+    ]);
 
         return redirect()->back()->with('error', 'Terjadi error: ' . $e->getMessage());
     }

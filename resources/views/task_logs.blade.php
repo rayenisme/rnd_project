@@ -66,14 +66,18 @@
                                             class="mdi mdi-calendar-outline auti-custom-input-icon"></i></span>
                                     <input type="text" class="form-control"
                                         placeholder="{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}"
-                                        aria-label="Username" name="pic_name" aria-describedby="basic-addon1" readonly>
+                                        aria-label="Username" aria-describedby="basic-addon1" readonly>
                                 </div>
-                                <form action="{{ route('event.store', $task->id) }}" method="POST">
+                                <form action="{{ route('event.store', $task->id) }}" method="POST"
+                                    enctype="multipart/form-data" id="formTaskLog" novalidate>
                                     @csrf
                                     <input type="hidden" name="task_id" value="{{ $task->id }}">
                                     <div class="mb-3">
-                                        <label for="exampleFormControlTextarea1" class="form-label mb-1">Deskripsi</label>
-                                        <textarea class="form-control" id="exampleFormControlTextarea1" name="description" rows="3" required></textarea>
+                                        <label for="description" class="form-label mb-1">Deskripsi</label>
+                                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                                        <div class="invalid-feedback">
+                                            Deskripsi wajib diisi terlebih dahulu
+                                        </div>
                                     </div>
 
                                     <div class="mb-3">
@@ -95,8 +99,9 @@
                                             (Clear)</label>
                                     </div>
                             </div>
-                            <div class="modal-footer"><button type="submit" class="btn btn-primary">Submit</button> <button
-                                    class="btn btn-outline-danger">Reset</button></div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
                         </div>
                         </form>
                     </div>
@@ -144,7 +149,21 @@
 
                                                         @if ($log->image)
                                                             <img src="{{ asset('storage/' . $log->image) }}"
-                                                                class="img-fluid rounded mt-2" style="max-width:200px;">
+                                                                class="rounded mt-2"
+                                                                style="width:85px; height:85px; object-fit:cover; cursor:pointer;"
+                                                                data-bs-toggle="modal" data-bs-target="#imageModal"
+                                                                onclick="showImage(this.src)">
+                                                            <div class="modal fade" id="imageModal" tabindex="-1">
+                                                                <div class="modal-dialog modal-dialog-centered"
+                                                                    style="width: fit-content">
+                                                                    <div class="modal-content bg-transparent border-0">
+                                                                        <div class="modal-body text-center p-0">
+                                                                            <img id="previewImage" src=""
+                                                                                style="max-height:90vh; width:auto; max-width:100%; object-fit:contain;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         @endif
 
                                                     </div>
@@ -409,6 +428,133 @@
         @endif
     </script>
 
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const form = document.getElementById("formTaskLog");
+            const description = document.getElementById("description");
+            const note = document.getElementById("exampleFormControlInput1");
+            const formFile = document.getElementById("formFile");
+
+            let lastAlert = "";
+
+            // Fungsi validasi deskripsi
+            function validateDescription(showAlert = false) {
+                const value = description.value.trim();
+
+                if (value === "") {
+                    description.classList.add("is-invalid");
+                    description.classList.remove("is-valid");
+
+                    if (showAlert && lastAlert !== "empty") {
+                        lastAlert = "empty";
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Deskripsi kosong',
+                            text: 'Deskripsi wajib diisi minimal 10 karakter'
+                        });
+                    }
+                    return false;
+                }
+
+                if (value.length < 10) {
+                    description.classList.add("is-invalid");
+                    description.classList.remove("is-valid");
+
+                    if (showAlert && lastAlert !== "short") {
+                        lastAlert = "short";
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Deskripsi terlalu singkat',
+                            text: 'Minimal 10 karakter'
+                        });
+                    }
+                    return false;
+                }
+
+                description.classList.remove("is-invalid");
+                description.classList.add("is-valid");
+                lastAlert = "";
+                return true;
+            }
+
+            // Validasi saat mengetik (tanpa alert)
+            description.addEventListener("input", function() {
+                validateDescription(false);
+            });
+
+            // Validasi saat kehilangan fokus (alert jika invalid)
+            description.addEventListener("blur", function() {
+                validateDescription(true);
+            });
+
+            // Submit form
+            form.addEventListener("submit", function(e) {
+                if (!validateDescription(true)) {
+                    e.preventDefault(); // Hentikan submit jika deskripsi invalid
+                }
+                // Jika valid → submit berjalan normal
+            });
+
+        });
+    </script>
+    {{-- <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const form = document.getElementById("formTaskLog");
+            const description = document.getElementById("description");
+
+            form.addEventListener("submit", function(e) {
+
+                let isValid = true;
+
+                if (description.value.trim() === "") {
+                    isValid = false;
+                    description.classList.add("is-invalid");
+                } else {
+                    description.classList.remove("is-invalid");
+                    description.classList.add("is-valid");
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Form belum lengkap',
+                        text: 'Mohon isi deskripsi terlebih dahulu'
+                    });
+                }
+            });
+
+            description.addEventListener("input", function() {
+                if (this.value.trim() !== "") {
+                    this.classList.remove("is-invalid");
+                    this.classList.add("is-valid");
+                } else {
+                    this.classList.remove("is-valid");
+                }
+            });
+
+        });
+    </script> --}}
+
+    <script>
+        function showImage(src) {
+            document.getElementById('previewImage').src = src;
+        }
+    </script>
+
+    <style>
+        .image-preview {
+            transition: 0.3s;
+        }
+
+        .image-preview:hover {
+            transform: scale(1.05);
+        }
+    </style>
     {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             const textarea = document.getElementById('descriptionTextarea');

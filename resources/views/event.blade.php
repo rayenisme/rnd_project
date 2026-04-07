@@ -75,19 +75,20 @@
                                             placeholder="{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}"
                                             aria-label="Username" name="pic_name" aria-describedby="basic-addon1" readonly>
                                     </div>
-                                    <form action="{{ route('tasks.store') }}" method="POST">
+                                    <form action="{{ route('tasks.store') }}" method="POST" id="formTask" novalidate>
                                         @csrf
                                         <div class="input-group auth-form-group-custom mb-3">
                                             <span class="input-group-text bg-primary bg-opacity-10 fs-16 "
                                                 id="basic-addon3"><i
                                                     class="mdi mdi-bank-outline auti-custom-input-icon"></i></span>
                                             <select type="text" class="form-control" id="departemen" name="department">
-                                                <option selected="selected">Pilih Departemen</option>
+                                                <option value="">Pilih Departemen</option>
                                                 <option value="Spinning">Spinning</option>
                                                 <option value="Ring Rope">Ring Rope</option>
                                                 <option value="Netting">Netting</option>
                                                 <option value="Finishing">Finishing</option>
                                             </select>
+                                            <div class="invalid-feedback">Departemen wajib dipilih</div>
                                         </div>
 
                                         <div class="input-group auth-form-group-custom mb-3">
@@ -95,7 +96,9 @@
                                                 id="basic-addon1"><i
                                                     class="mdi mdi-account-outline auti-custom-input-icon"></i></span>
                                             <input type="text" class="form-control" placeholder="PIC"
-                                                aria-label="Username" name="pic_name" aria-describedby="basic-addon1">
+                                                aria-label="Username" id="pic" name="pic_name"
+                                                aria-describedby="basic-addon1">
+                                            <div class="invalid-feedback">PIC harus diisi</div>
                                         </div>
 
                                         <div class="input-group auth-form-group-custom mb-3">
@@ -103,12 +106,13 @@
                                                 id="basic-addon1"><i
                                                     class="mdi mdi-book-outline auti-custom-input-icon"></i></span>
                                             <input type="text" class="form-control" placeholder="Subject"
-                                                aria-label="Username" name="name" aria-describedby="basic-addon1">
+                                                aria-label="Username" id="subject" name="name"
+                                                aria-describedby="basic-addon1">
+                                            <div class="invalid-feedback">Subject minimal 10 karakter</div>
                                         </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary">Submit</button>
-                                    <button class="btn btn-outline-danger">Reset</button>
                                 </div>
                             </div>
                             </form>
@@ -160,17 +164,6 @@
         </div>
     </div>
     <!-- end row -->
-
-
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 @endsection
 
 @section('scripts')
@@ -202,5 +195,163 @@
                 showConfirmButton: false
             });
         @endif
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const modal = document.getElementById("modal6");
+            const form = document.getElementById("formTask");
+            const department = document.getElementById("departemen");
+            const pic = document.getElementById("pic");
+            const subject = document.getElementById("subject");
+
+            // ===== RESET FUNCTION =====
+            function resetForm() {
+                form.reset(); // kosongkan semua input
+                department.classList.remove("is-invalid", "is-valid");
+                pic.classList.remove("is-invalid", "is-valid");
+                subject.classList.remove("is-invalid", "is-valid");
+            }
+
+            // ===== EVENT MODAL CLOSE =====
+            modal.addEventListener('hidden.bs.modal', function() {
+                resetForm();
+            });
+
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const form = document.getElementById("formTask");
+            const department = document.getElementById("departemen");
+            const pic = document.getElementById("pic");
+            const subject = document.getElementById("subject");
+
+            let isSubmitted = false; // 🔥 kunci utama
+
+            // ===== VALIDATION FUNCTIONS =====
+            function validateDepartment(showAlert = false) {
+                if (department.value === "") {
+                    department.classList.add("is-invalid");
+                    department.classList.remove("is-valid");
+
+                    if (showAlert) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Departemen belum dipilih',
+                            text: 'Silakan pilih departemen'
+                        });
+                    }
+                    return false;
+                }
+
+                department.classList.remove("is-invalid");
+                department.classList.add("is-valid");
+                return true;
+            }
+
+            function validatePic(showAlert = false) {
+                const value = pic.value.trim();
+
+                if (value === "") {
+                    pic.classList.add("is-invalid");
+
+                    if (showAlert) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'PIC kosong',
+                            text: 'PIC wajib diisi'
+                        });
+                    }
+                    return false;
+                }
+
+                if (value.length < 3) {
+                    pic.classList.add("is-invalid");
+
+                    if (showAlert) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'PIC terlalu singkat',
+                            text: 'Minimal 3 karakter'
+                        });
+                    }
+                    return false;
+                }
+
+                pic.classList.remove("is-invalid");
+                pic.classList.add("is-valid");
+                return true;
+            }
+
+            function validateSubject(showAlert = false) {
+                const value = subject.value.trim();
+
+                if (value === "") {
+                    subject.classList.add("is-invalid");
+
+                    if (showAlert) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Subject kosong',
+                            text: 'Subject wajib diisi'
+                        });
+                    }
+                    return false;
+                }
+
+                if (value.length < 5) {
+                    subject.classList.add("is-invalid");
+
+                    if (showAlert) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Subject terlalu singkat',
+                            text: 'Minimal 5 karakter'
+                        });
+                    }
+                    return false;
+                }
+
+                subject.classList.remove("is-invalid");
+                subject.classList.add("is-valid");
+                return true;
+            }
+
+            // ===== REALTIME (TANPA ALERT) =====
+            department.addEventListener("change", () => validateDepartment(false));
+            pic.addEventListener("input", () => validatePic(false));
+            subject.addEventListener("input", () => validateSubject(false));
+
+            // ===== SUBMIT =====
+            form.addEventListener("submit", function(e) {
+
+                isSubmitted = true; // 🔥 tandai sudah submit
+
+                // cek satu per satu (alert hanya muncul di sini)
+                if (!validateDepartment(true)) {
+                    e.preventDefault();
+                    department.focus();
+                    return;
+                }
+
+                if (!validatePic(true)) {
+                    e.preventDefault();
+                    pic.focus();
+                    return;
+                }
+
+                if (!validateSubject(true)) {
+                    e.preventDefault();
+                    subject.focus();
+                    return;
+                }
+
+            });
+
+        });
     </script>
 @endsection
