@@ -130,7 +130,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($tasks as $index => $task)
+                            @foreach ($tasks as $index => $task)
                                 <tr>
                                     <td class="text-center">{{ $index + 1 }}</td>
                                     <td>{{ $task->created_at->translatedFormat('l, d F Y') }}</td>
@@ -152,7 +152,7 @@
                                     </td>
 
                                 </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
