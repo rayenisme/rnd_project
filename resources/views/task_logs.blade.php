@@ -148,7 +148,7 @@
                                                         @endif
 
                                                         @if ($log->image)
-                                                            <img src="{{ asset('storage/' . $log->image) }}"
+                                                            <img src="{{ Storage::disk('s3')->url($log->image) }}"
                                                                 class="rounded mt-2"
                                                                 style="width:85px; height:85px; object-fit:cover; cursor:pointer;"
                                                                 data-bs-toggle="modal" data-bs-target="#imageModal"

@@ -35,21 +35,30 @@
                                     <span class="input-group-text bg-primary bg-opacity-10 fs-16 " id="basic-addon3"><i
                                             class="mdi mdi-email-outline auti-custom-input-icon"></i></span>
                                     <input type="email" class="form-control" id="useremail" placeholder="Enter email"
-                                        aria-label="email" aria-describedby="basic-addon3">
+                                        aria-label="email" aria-describedby="basic-addon3" name="email">
                                 </div>
 
                                 <div class="input-group auth-form-group-custom mb-3">
                                     <span class="input-group-text bg-primary bg-opacity-10 fs-16 " id="basic-addon1"><i
                                             class="mdi mdi-account-outline auti-custom-input-icon"></i></span>
-                                    <input type="text" class="form-control" placeholder="Enter username"
-                                        aria-label="Username" aria-describedby="basic-addon1">
+                                    <input type="text" class="form-control" placeholder="Enter Full Name"
+                                        aria-label="Username" aria-describedby="basic-addon1" name="name">
                                 </div>
 
                                 <div class="input-group auth-form-group-custom mb-3">
                                     <span class="input-group-text bg-primary bg-opacity-10 fs-16" id="basic-addon2"><i
                                             class="mdi mdi-lock-outline auti-custom-input-icon"></i></span>
                                     <input type="password" class="form-control" id="userpassword"
-                                        placeholder="Enter password" aria-label="Password" aria-describedby="basic-addon2">
+                                        placeholder="Enter password" aria-label="Password" aria-describedby="basic-addon2"
+                                        name="password">
+                                </div>
+
+                                <div class="input-group auth-form-group-custom mb-3">
+                                    <span class="input-group-text bg-primary bg-opacity-10 fs-16" id="basic-addon2"><i
+                                            class="mdi mdi-lock-outline auti-custom-input-icon"></i></span>
+                                    <input type="password" class="form-control" id="userpassword"
+                                        placeholder="Enter password" aria-label="Password" aria-describedby="basic-addon2"
+                                        name="confirm_password">
                                 </div>
 
                                 <div class="mb-5">
@@ -66,7 +75,7 @@
                                 </div>
 
                                 <div class="mt-3 text-center">
-                                    <p class="mb-0">Already have an account ? <a href="{{ url('auth-login') }}"
+                                    <p class="mb-0">Already have an account ? <a href="{{ url('/') }}"
                                             class="fw-medium text-primary"> Login </a> </p>
                                 </div>
                             </form>

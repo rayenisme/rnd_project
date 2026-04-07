@@ -29,7 +29,6 @@ public function store(Request $request)
     try {
         $imagePath = null;
 
-        // ✅ HANDLE IMAGE
         if ($request->hasFile('image')) {
 
             $image    = $request->file('image');
@@ -43,7 +42,7 @@ public function store(Request $request)
 
             $encoded = $img->encode(new JpegEncoder(quality: 80));
 
-            Storage::disk('public')->put('task_logs/' . $filename, $encoded);
+            Storage::disk('s3')->put('task_logs/' . $filename, $encoded);
 
             $imagePath = 'task_logs/' . $filename;
         }
