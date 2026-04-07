@@ -83,10 +83,10 @@
                                                     class="mdi mdi-bank-outline auti-custom-input-icon"></i></span>
                                             <select type="text" class="form-control" id="departemen" name="department">
                                                 <option selected="selected">Pilih Departemen</option>
-                                                <option value="1">Spinning</option>
-                                                <option value="2">Ring Rope</option>
-                                                <option value="3">Netting</option>
-                                                <option value="4">Finishing</option>
+                                                <option value="Spinning">Spinning</option>
+                                                <option value="Ring Rope">Ring Rope</option>
+                                                <option value="Netting">Netting</option>
+                                                <option value="Finishing">Finishing</option>
                                             </select>
                                         </div>
 
