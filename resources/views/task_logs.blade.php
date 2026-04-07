@@ -152,7 +152,7 @@
                                                                 class="rounded mt-2"
                                                                 style="width:85px; height:85px; object-fit:cover; cursor:pointer;"
                                                                 data-bs-toggle="modal" data-bs-target="#imageModal"
-                                                                onclick="showImage(this.src)">
+                                                                onclick="openModal(this.src)">
                                                             <div class="modal fade" id="imageModal" tabindex="-1">
                                                                 <div class="modal-dialog modal-dialog-centered"
                                                                     style="width: fit-content">
@@ -541,8 +541,12 @@
     </script> --}}
 
     <script>
-        function showImage(src) {
-            document.getElementById('previewImage').src = src;
+        function openModal(src) {
+            const img = document.getElementById('previewImage');
+            img.src = src;
+
+            const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+            modal.show();
         }
     </script>
 
