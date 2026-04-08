@@ -5,18 +5,11 @@
 @endsection
 
 @section('css')
+    <!-- Sweet Alert-->
+    <link rel="stylesheet" href="{{ URL::asset('build/libs/sweetalert2/dist/sweetalert2.min.css') }}">
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="page-title-box d-flex align-items-center justify-content-between">
-                <div>
-                    <h4 class="fs-16 fw-semibold mb-1 mb-md-2">Good Morning, <span class="text-primary">User!</span></h4>
-                </div>
-            </div>
-        </div>
-    </div>
     <!--    end row -->
 
     <div class="row">
@@ -87,7 +80,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-xl-4">
                     <div class="card bg-danger-subtle"
                         style="background: url('build/images/dashboard/dashboard-shape-1.png'); background-repeat: no-repeat; background-position: bottom center; ">
@@ -147,9 +140,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <!-- end row -->
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-xl-8">
                     <div class="card">
                         <div class="card-header">
@@ -307,12 +300,12 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
     <!-- end row -->
 
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-xxl-8 col-xl-6">
             <div class="card">
                 <div class="card-header">
@@ -429,8 +422,22 @@
             <!-- end card -->
         </div>
         <!-- end col -->
-    </div>
+    </div> --}}
     <!-- end row -->
+
+    @if (session('login_success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Login Berhasil',
+                    text: '{{ session('login_success') }}',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
+            });
+        </script>
+    @endif
 @endsection
 
 @section('scripts')
@@ -438,4 +445,10 @@
     <script src="{{ URL::asset('build/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
     <script src="{{ URL::asset('build/js/pages/dashboard.init.js') }}"></script>
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
+
+    <!-- Sweet Alerts js -->
+    <script src="{{ URL::asset('build/libs/sweetalert2/dist/sweetalert2.min.js') }}"></script>
+
+    <!-- Sweet alert init js-->
+    <script src="{{ URL::asset('build/js/pages/sweet-alerts.init.js') }}"></script>
 @endsection

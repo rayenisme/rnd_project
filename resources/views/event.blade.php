@@ -186,18 +186,6 @@
     <script src="{{ URL::asset('build/js/pages/sweet-alerts.init.js') }}"></script>
 
     <script>
-        @if (session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil',
-                text: '{{ session('success') }}',
-                timer: 2000,
-                showConfirmButton: false
-            });
-        @endif
-    </script>
-
-    <script>
         document.addEventListener("DOMContentLoaded", function() {
 
             const modal = document.getElementById("modal6");

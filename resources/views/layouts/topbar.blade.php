@@ -199,65 +199,123 @@
                         <img class="rounded avatar-2xs p-0" src="{{ URL::asset('build/images/users/avatar-6.png') }}"
                             alt="Header Avatar">
                     </button>
-                    <div
-                        class="dropdown-menu dropdown-menu-wide dropdown-menu-end dropdown-menu-animated overflow-hidden py-0">
-                        <div class="card border-0">
-                            <div class="card-header bg-primary rounded-0">
-                                <div class="rich-list-item w-100 p-0">
-                                    <div class="rich-list-prepend">
-                                        <div class="avatar avatar-label-light avatar-circle">
-                                            <div class="avatar-display"><i class="fa fa-user-alt"></i></div>
-                                        </div>
-                                    </div>
-                                    <div class="rich-list-content">
-                                        <h3 class="rich-list-title text-white">Charlie Stone</h3>
-                                        <span class="rich-list-subtitle text-white">admin@codubucks.in</span>
-                                    </div>
-                                    <div class="rich-list-append"><span class="badge badge-label-light fs-6">6+</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body p-0">
-                                <div class="grid-nav grid-nav-flush grid-nav-action grid-nav-no-rounded">
-                                    <div class="grid-nav-row">
-                                        <a href="{{ url('apps-contact') }}" class="grid-nav-item">
-                                            <div class="grid-nav-icon"><i class="far fa-address-card"></i></div>
-                                            <span class="grid-nav-content">Profile</span>
-                                        </a>
-                                        <a href="#!" class="grid-nav-item">
-                                            <div class="grid-nav-icon"><i class="far fa-comments"></i></div>
-                                            <span class="grid-nav-content">Messages</span>
-                                        </a>
-                                        <a href="#!" class="grid-nav-item">
-                                            <div class="grid-nav-icon"><i class="far fa-clone"></i></div>
-                                            <span class="grid-nav-content">Activities</span>
-                                        </a>
-                                    </div>
-                                    <div class="grid-nav-row">
-                                        <a href="#!" class="grid-nav-item">
-                                            <div class="grid-nav-icon"><i class="far fa-calendar-check"></i></div>
-                                            <span class="grid-nav-content">Tasks</span>
-                                        </a>
-                                        <a href="#!" class="grid-nav-item">
-                                            <div class="grid-nav-icon"><i class="far fa-sticky-note"></i></div>
-                                            <span class="grid-nav-content">Notes</span>
-                                        </a>
-                                        <a href="#!" class="grid-nav-item">
-                                            <div class="grid-nav-icon"><i class="far fa-bell"></i></div>
-                                            <span class="grid-nav-content">Notification</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer card-footer-bordered rounded-0"><a href="{{ url('auth-login') }}"
-                                    class="btn btn-label-danger">Sign out</a></div>
-                        </div>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated">
+                        <button class="dropdown-item align-items-center gap-3 px-3" data-bs-toggle="modal"
+                            data-bs-target="#profileModal">
+                            <i class="far fa-address-card"></i>
+                            <span class="grid-nav-content text-start">Profile Setting</span>
+                        </button>
+                        <hr class="my-2">
+                        <button class="dropdown-item align-items-center gap-3 px-3" data-bs-toggle="modal"
+                            data-bs-target="#passwordModal">
+                            <i class="fas fa-key"></i>
+                            <span class="grid-nav-content text-start">Password Setting</span>
+                        </button>
+                        <hr class="my-2">
+                        <button id="logoutBtn" class="dropdown-item align-items-center gap-3 px-3" type="button">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span class="grid-nav-content text-start">Sign out</span>
+                        </button>
                     </div>
                 </div>
-                <!-- End Profile -->
+            </div>
+            <!-- End Profile -->
+        </div>
+    </div>
+    <!-- End menu -->
+    </div>
+
+    {{-- Modal Profile --}}
+    <div class="modal fade" data-bs-backdrop="static" aria-hidden="true" id="profileModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header justify-content-between">
+                    <h5 class="modal-title">Update Profile</h5>
+                    <button type="button" class="btn btn-sm btn-label-danger btn-icon" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url('/profile/update') }}" id="profileForm" method="POST">
+                        @csrf
+                        <div class="input-group auth-form-group-custom mb-3">
+                            <span class="input-group-text bg-primary bg-opacity-10 fs-16 " id="basic-addon1">
+                                <i class="mdi mdi-account-circle-outline auti-custom-input-icon"></i>
+                            </span>
+                            <input type="text" class="form-control" value="{{ session('user_profile.name') }}"
+                                aria-label="name" id="name" name="name" aria-describedby="basic-addon1">
+                            <div class="invalid-feedback">Full Name</div>
+                        </div>
+                        <div class="input-group auth-form-group-custom mb-3">
+                            <span class="input-group-text bg-primary bg-opacity-10 fs-16 " id="basic-addon1"><i
+                                    class="mdi mdi-account-outline auti-custom-input-icon"></i></span>
+                            <input type="text" class="form-control" value="{{ session('user_profile.username') }}"
+                                aria-label="Username" id="username" name="username"
+                                aria-describedby="basic-addon1">
+                            <div class="invalid-feedback">Username</div>
+                        </div>
+                        <div class="input-group auth-form-group-custom mb-3">
+                            <span class="input-group-text bg-primary bg-opacity-10 fs-16 " id="basic-addon1"><i
+                                    class="mdi mdi-email auti-custom-input-icon"></i></span>
+                            <input type="email" class="form-control" value="{{ session('user_profile.email') }}"
+                                aria-label="Email" id="email" name="email" aria-describedby="basic-addon1">
+                            <div class="invalid-feedback">Email</div>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <button type="button" id="updateBtn" class="btn btn-primary">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <!-- End menu -->
+    </div>
+
+    {{-- Modal Password --}}
+    <div class="modal fade" data-bs-backdrop="static" aria-hidden="true" id="passwordModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header justify-content-between">
+                    <h5 class="modal-title">Password Setting</h5>
+                    <button type="button" class="btn btn-sm btn-label-danger btn-icon" data-bs-dismiss="modal"
+                        id="closePasswordModal">
+                        <i class="mdi mdi-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url('/password/update') }}" id="passwordForm" method="POST">
+                        @csrf
+                        <div class="input-group auth-form-group-custom mb-3">
+                            <span class="input-group-text bg-primary bg-opacity-10 fs-16 " id="basic-addon1"><i
+                                    class="mdi mdi-lock auti-custom-input-icon"></i></span>
+                            <input type="password" class="form-control" placeholder="New Password"
+                                aria-label="password" id="password" name="password"
+                                aria-describedby="basic-addon1">
+                            <button type="button" class="input-group-text bg-opacity-0 fs-16" id="togglePassword">
+                                <i class="mdi mdi-eye-outline" id="iconPassword"></i>
+                            </button>
+                            <div class="invalid-feedback">Password</div>
+                        </div>
+                        <div class="input-group auth-form-group-custom mb-3">
+                            <span class="input-group-text bg-primary bg-opacity-10 fs-16 " id="basic-addon1"><i
+                                    class="mdi mdi-lock auti-custom-input-icon"></i></span>
+                            <input type="password" class="form-control" placeholder="Confirm Password"
+                                aria-label="confirm_password" id="confirm_password" name="password_confirmation"
+                                aria-describedby="basic-addon1">
+                            <button type="button" class="input-group-text bg-opacity-0 fs-16"
+                                id="toggleConfirmPassword">
+                                <i class="mdi mdi-eye-outline" id="iconConfirmPassword"></i>
+                            </button>
+                            <div class="invalid-feedback">Confirm Password</div>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <button type="button" name="btnPassword" class="btn btn-info" id="btnPassword">
+                                Change Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </header>
 <!-- End topbar -->

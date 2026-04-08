@@ -14,15 +14,13 @@
                     </a>
                 </li>
 
+                <li class="menu-title">Project</li>
+
                 <li>
-                    <a href="javascript: void(0);" class="has-arrow ">
-                        <i class="fas fa-book"></i>
-                        <span>Document</span>
+                    <a href="{{ url('/event') }}" class="">
+                        <i class="fas fa-desktop"></i>
+                        <span>Event</span>
                     </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ url('/event') }}"><i class="mdi mdi-circle-outline"></i>
-                                Event</a></li>
-                    </ul>
                 </li>
             </ul>
         </div>

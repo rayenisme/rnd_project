@@ -5,6 +5,8 @@
 @endsection
 
 @section('css')
+    <!-- Sweet Alert-->
+    <link rel="stylesheet" href="{{ URL::asset('build/libs/sweetalert2/dist/sweetalert2.min.css') }}">
 @endsection
 
 @section('content')
@@ -29,40 +31,39 @@
                         </div>
 
                         <div class="p-2 mt-5">
-                            <form class="" action="index">
+                            <form class="" action="{{ URL('/login') }}" method="POST">
+                                @csrf
                                 <div class="input-group auth-form-group-custom mb-3">
                                     <span class="input-group-text bg-primary bg-opacity-10 fs-16 " id="basic-addon1"><i
                                             class="mdi mdi-account-outline auti-custom-input-icon"></i></span>
-                                    <input type="text" class="form-control" placeholder="admin@coducuks.in"
-                                        aria-label="Username" aria-describedby="basic-addon1">
+                                    <input type="text"
+                                        class="form-control @if ($errors->has('username')) is-invalid @elseif(old('username')) is-valid @endif"
+                                        placeholder="username" aria-label="Username" aria-describedby="basic-addon1"
+                                        name="username" value="{{ old('username') }}">
+                                    @if ($errors->has('username'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('username') }}
+                                        </div>
+                                    @endif
                                 </div>
 
                                 <div class="input-group auth-form-group-custom mb-3">
                                     <span class="input-group-text bg-primary bg-opacity-10 fs-16" id="basic-addon2"><i
                                             class="mdi mdi-lock-outline auti-custom-input-icon"></i></span>
-                                    <input type="password" class="form-control" id="userpassword" placeholder="admin123"
-                                        aria-label="Username" aria-describedby="basic-addon1">
-                                </div>
-
-                                <div class="mb-sm-5">
-                                    <div class="form-check float-sm-start">
-                                        <input type="checkbox" class="form-check-input" id="customControlInline">
-                                        <label class="form-check-label" for="customControlInline">Remember me</label>
-                                    </div>
-                                    <div class="float-sm-end">
-                                        <a href="auth-recoverpw.html" class="text-muted"><i class="mdi mdi-lock me-1"></i>
-                                            Forgot your password?</a>
-                                    </div>
+                                    <input type="password"
+                                        class="form-control @if ($errors->has('password')) is-invalid @endif"
+                                        id="userpassword" placeholder="password" aria-label="password"
+                                        aria-describedby="basic-addon2" name="password">
+                                    @if ($errors->has('password'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('password') }}
+                                        </div>
+                                    @endif
                                 </div>
 
                                 <div class="pt-3 text-center">
-                                    <a href="{{ url('index') }}" class="btn btn-primary w-xl waves-effect waves-light">Log
-                                        In</a>
-                                </div>
-
-                                <div class="mt-3 text-center">
-                                    <p class="mb-0">Don't have an account ? <a href="{{ url('/register') }}"
-                                            class="fw-medium text-primary"> Register </a> </p>
+                                    <button type="submit" class="btn btn-primary w-xl waves-effect waves-light">Log
+                                        In</button>
                                 </div>
 
                             </form>
@@ -86,4 +87,61 @@
 
 @section('scripts')
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
+    <!-- Sweet Alerts js -->
+    <script src="{{ URL::asset('build/libs/sweetalert2/dist/sweetalert2.min.js') }}"></script>
+
+    <!-- Sweet alert init js-->
+    <script src="{{ URL::asset('build/js/pages/sweet-alerts.init.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginError = document.body.dataset.loginError;
+
+            // SweetAlert jika login gagal dari server
+            if (loginError) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Gagal',
+                    text: loginError,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Coba Lagi'
+                });
+
+                // reset password field
+                const passwordInput = document.getElementById('passwordInput');
+                if (passwordInput) passwordInput.value = '';
+            }
+
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                const usernameInput = document.querySelector('input[name="username"]');
+                const passwordInput = document.getElementById('passwordInput');
+
+                // Hapus border merah/hijau saat mengetik
+                [usernameInput, passwordInput].forEach(input => {
+                    input.addEventListener('input', function() {
+                        input.classList.remove('is-invalid', 'is-valid');
+                    });
+                });
+
+                // Cek input kosong sebelum submit
+                loginForm.addEventListener('submit', function(e) {
+                    let emptyFields = [];
+                    if (!usernameInput.value.trim()) emptyFields.push('Username');
+                    if (!passwordInput.value.trim()) emptyFields.push('Password');
+
+                    if (emptyFields.length > 0) {
+                        e.preventDefault(); // cegah submit
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Form Belum Lengkap',
+                            text: emptyFields.join(' dan ') + ' harus diisi!',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            }
+        });
+    </script>
 @endsection

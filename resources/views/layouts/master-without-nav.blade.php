@@ -14,7 +14,7 @@
     @include('layouts.head-css')
 </head>
 
-<body>
+<body data-login-error="@if ($errors->any()) {{ $errors->first() }} @endif">
 
     @yield('content')
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Tasks;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -31,7 +32,7 @@ class HomeController extends Controller
 
         return view('event', compact('tasks'));
         } catch (\Exception $e) {
-            \Log::error('Gagal mengambil data: '.$e->getMessage());
+            Log::error('Gagal mengambil data: '.$e->getMessage());
             return redirect()->back()->with('error', 'Terjadi error saat mengambil data');
         }
     }
