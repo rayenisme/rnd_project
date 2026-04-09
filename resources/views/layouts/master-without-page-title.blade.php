@@ -13,6 +13,21 @@
 
     <!-- include head css -->
     @include('layouts.head-css')
+
+    <style>
+        .urgent-dot {
+            width: 8px;
+            height: 8px;
+            background-color: red;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        #taskTable thead th {
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>

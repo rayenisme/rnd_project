@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\TaskLogs;
+use Illuminate\Support\Facades\Log;
 
 class Tasks extends Model
 {
@@ -13,19 +14,20 @@ class Tasks extends Model
     protected $fillable = [
         'code',
         'name',
-        'department',
+        'department_id',
         'pic_name',
         'description',
+        'is_urgent',
         'status'
     ];
 
     public function index()
 {
     try {
-        $tasks = Task::orderBy('created_at', 'desc')->get();
-        return view('tasks.index', compact('tasks'));
+        $tasks = Tasks::orderBy('created_at', 'desc')->get();
+        return view('event', compact('tasks'));
     } catch (\Exception $e) {
-        \Log::error('Gagal mengambil Task: '.$e->getMessage());
+        Log::error('Gagal mengambil Task: '.$e->getMessage());
         return redirect()->back()->with('error', 'Terjadi error saat mengambil data Task');
     }
 }
@@ -34,6 +36,11 @@ class Tasks extends Model
     {
         return $this->hasMany(TaskLogs::class, 'task_id');
     }
+    
+    public function department()
+{
+    return $this->belongsTo(Departments::class);
+}
 
     protected static function boot()
 {

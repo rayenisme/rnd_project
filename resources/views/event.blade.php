@@ -46,13 +46,18 @@
                 </div>
                 <div class="card-body">
                     {{-- Button Modals --}}
-                    <div class="row">
-                        <div class="col-sm-8 col-lg-10">
-                            <div class="mb-2">
-                                <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modal6">+ Add
-                                    Data</button>
-                            </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        {{-- <div class="col-sm-8 col-lg-10">
+                            <div class="mb-2"> --}}
+                        <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modal6">+ Add
+                            Data</button>
+                        {{-- </div>
                         </div>
+                        <div class="col-sm-4 col-lg-2 self-item-end">
+                            <div class="mb-2"> --}}
+                        <button class="btn btn-sm btn-outline-secondary px-3" id="resetFilters">Reset Filter</button>
+                        {{-- </div>
+                        </div> --}}
                     </div>
                     {{-- Button Modals End --}}
 
@@ -81,12 +86,14 @@
                                             <span class="input-group-text bg-primary bg-opacity-10 fs-16 "
                                                 id="basic-addon3"><i
                                                     class="mdi mdi-bank-outline auti-custom-input-icon"></i></span>
-                                            <select type="text" class="form-control" id="departemen" name="department">
+                                            <select type="text" class="form-control" id="department_id"
+                                                name="department_id">
                                                 <option value="">Pilih Departemen</option>
-                                                <option value="Spinning">Spinning</option>
-                                                <option value="Ring Rope">Ring Rope</option>
-                                                <option value="Netting">Netting</option>
-                                                <option value="Finishing">Finishing</option>
+                                                @foreach ($departments as $dept)
+                                                    <option value="{{ $dept->id }}">
+                                                        {{ $dept->name }}
+                                                    </option>
+                                                @endforeach
                                             </select>
                                             <div class="invalid-feedback">Departemen wajib dipilih</div>
                                         </div>
@@ -101,7 +108,7 @@
                                             <div class="invalid-feedback">PIC harus diisi</div>
                                         </div>
 
-                                        <div class="input-group auth-form-group-custom mb-3">
+                                        <div class="input-group auth-form-group-custom mb-2">
                                             <span class="input-group-text bg-primary bg-opacity-10 fs-16 "
                                                 id="basic-addon1"><i
                                                     class="mdi mdi-book-outline auti-custom-input-icon"></i></span>
@@ -109,6 +116,14 @@
                                                 aria-label="Username" id="subject" name="name"
                                                 aria-describedby="basic-addon1">
                                             <div class="invalid-feedback">Subject minimal 10 karakter</div>
+                                        </div>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" value="1" id="is_urgent"
+                                                name="is_urgent">
+                                            <label class="form-check-label fw-bold text-danger" for="is_urgent">
+                                                Tandai sebagai Urgent
+                                            </label>
                                         </div>
                                 </div>
                                 <div class="modal-footer">
@@ -120,15 +135,24 @@
                     </div>
                     {{-- Modal End --}}
 
-                    <table id="datatable" class="table table-hover table-bordered table-striped dt-responsive nowrap"
+                    {{-- Table Urgent Filter --}}
+                    <div class="d-flex justify-content-end">
+                        <div class="form-check form-switch bg-danger px-2 py-1 rounded">
+                            <input class="form-check-input ms-0" type="checkbox" id="toggleUrgent" role="button">
+                            <label class="form-check-label text-white fw-medium fs-12 ms-2"
+                                for="toggleUrgent">Urgent</label>
+                        </div>
+                    </div>
+
+                    <table id="taskTable" class="table table-hover table-bordered table-striped dt-responsive nowrap"
                         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
                                 <th class="text-center">Tanggal</th>
-                                <th class="text-center">Departemen</th>
                                 <th class="text-center">Nomor Project</th>
                                 <th class="text-center">Subject</th>
+                                <th class="text-center">Departemen</th>
                                 <th class="text-center">Status</th>
                                 <th class="text-center">Aksi</th>
                             </tr>
@@ -138,14 +162,25 @@
                                 <tr>
                                     <td class="text-center">{{ $index + 1 }}</td>
                                     <td>{{ $task->created_at->translatedFormat('l, d F Y') }}</td>
-                                    <td>{{ $task->department }}</td>
                                     <td>{{ $task->code }}</td>
                                     <td>{{ $task->name }}</td>
+                                    <td>{{ $task->department->name }}</td>
                                     <td>
+                                        <span class="d-none">{{ $task->is_urgent ? 'Urgent' : 'Normal' }}</span>
                                         @if (strtolower($task->status) == 'in progress')
-                                            <span class="badge alert-label-info">{{ $task->status }}</span>
+                                            <span class="badge alert-label-info">
+                                                @if ($task->is_urgent && $task->status != 'Clear')
+                                                    <span class="urgent-dot"></span>
+                                                @endif
+                                                {{ $task->status }}
+                                            </span>
                                         @else
-                                            <span class="badge alert-label-primary">{{ $task->status }}</span>
+                                            <span class="badge alert-label-primary">
+                                                @if ($task->is_urgent && $task->status != 'Clear')
+                                                    <span class="urgent-dot"></span>
+                                                @endif
+                                                {{ $task->status }}
+                                            </span>
                                         @endif
                                     </td>
                                     <td class="text-center">
@@ -158,6 +193,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
+
                     </table>
                 </div>
             </div>
@@ -190,7 +226,7 @@
 
             const modal = document.getElementById("modal6");
             const form = document.getElementById("formTask");
-            const department = document.getElementById("departemen");
+            const department = document.getElementById("department_id");
             const pic = document.getElementById("pic");
             const subject = document.getElementById("subject");
 
@@ -213,8 +249,23 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
+            const checkbox = document.getElementById('is_urgent');
+            if (checkbox) {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        Swal.fire({
+                            title: 'Priority',
+                            text: "This event is Urgent Priority.",
+                            icon: 'warning',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }
+                });
+            }
+
             const form = document.getElementById("formTask");
-            const department = document.getElementById("departemen");
+            const department = document.getElementById("department_id");
             const pic = document.getElementById("pic");
             const subject = document.getElementById("subject");
 
@@ -309,7 +360,6 @@
                 return true;
             }
 
-            // ===== REALTIME (TANPA ALERT) =====
             department.addEventListener("change", () => validateDepartment(false));
             pic.addEventListener("input", () => validatePic(false));
             subject.addEventListener("input", () => validateSubject(false));
@@ -336,6 +386,123 @@
                     e.preventDefault();
                     subject.focus();
                     return;
+                }
+
+            });
+
+        });
+    </script>
+
+    <script>
+        let departments = @json($departments);
+    </script>
+
+    <script>
+        $(document).ready(function() {
+
+            var table = $('#taskTable').DataTable({
+                lengthChange: false,
+                ordering: true,
+                columnDefs: [{
+                    orderable: false,
+                    targets: [1, 2, 3, 4, 5, 6]
+                }]
+            });
+
+            // Sembunyikan search default
+            $('#taskTable_filter').hide();
+
+            // Tombol reset filter
+            $('#resetFilters').on('click', function() {
+                table.columns().search('').draw(); // reset semua filter
+
+                $('#taskTable thead th').each(function() {
+                    let th = $(this);
+                    let title = th.data('title'); // simpan title awal sebelumnya
+                    th.empty().text(title);
+                });
+
+                $('#toggleUrgent').prop('checked', false);
+            });
+
+            // Switch urgent filter
+            $('#toggleUrgent').on('change', function() {
+                if ($(this).is(':checked')) {
+                    table.column(5).search('Urgent').draw();
+                } else {
+                    table.column(5).search('').draw();
+                }
+            });
+
+            // Simpan judul awal header
+            $('#taskTable thead th').each(function() {
+                $(this).data('title', $(this).text());
+            });
+
+            // Event klik header untuk memunculkan filter
+            $('#taskTable thead').on('click', 'th', function(e) {
+
+                e.stopPropagation();
+                e.preventDefault();
+
+                let th = $(this);
+                let index = th.index();
+                let title = th.data('title');
+
+                if (index === 0 || index === 6) return;
+
+                if (th.find('input, select').length > 0) return;
+
+                let colDef = table.settings()[0].aoColumns[index];
+                if (colDef.bSortable) return;
+
+                // Kosongkan isi th
+                th.empty();
+
+                // Kolom Departemen
+                if (index === 4) {
+                    let select = $(
+                        '<select class="form-control form-control-sm"><option value="">Semua</option></select>'
+                    );
+                    departments.forEach(function(dept) {
+                        select.append(`<option value="${dept.name}">${dept.name}</option>`);
+                    });
+                    th.append(select);
+                    select.focus();
+
+                    select.on('change', function() {
+                        table.column(index).search($(this).val()).draw();
+                    });
+                }
+
+                // Kolom Status
+                else if (index === 5) {
+                    let select = $(`
+                <select class="form-control form-control-sm">
+                    <option value="">Semua</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Clear">Clear</option>
+                </select>
+            `);
+                    th.append(select);
+                    select.focus();
+
+                    select.on('change', function() {
+                        table.column(index).search($(this).val()).draw();
+                    });
+                }
+
+                // Kolom lain (Tanggal, Kode, Subject)
+                else {
+                    let input = $(
+                        `<input type="text" class="form-control form-control-sm" placeholder="Cari ${title}" />`
+                    );
+                    th.append(input);
+                    input.focus();
+
+                    input.on('keyup', function() {
+                        table.column(index).search(this.value).draw();
+                    });
                 }
 
             });

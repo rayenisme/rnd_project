@@ -147,6 +147,18 @@
                                                             </p>
                                                         @endif
 
+                                                        {{-- Development
+                                                        @if ($log->image)
+                                                            <a class="col-3 mb-3"
+                                                                href="{{ URL::asset('build/storage/' . $log->image) }}"
+                                                                target="_blank">
+                                                                <img src="{{ URL::asset('build/storage/' . $log->image) }}"
+                                                                    class="rounded image-preview"
+                                                                    style="width:80px; height:80px; object-fit:cover;">
+                                                            </a>
+                                                        @endif --}}
+
+                                                        {{-- Bucket Production --}}
                                                         @if ($log->image)
                                                             <a class="col-3 mb-3"
                                                                 href="{{ Storage::disk('s3')->url($log->image) }}"
@@ -174,8 +186,8 @@
         </div>
         <div class="col-xl-6">
             <div class="card border">
-                <div class="card-header card-header-bordered justify-content-between mb-0">
-                    <h3 class="card-title mb-1">Detail Project</h3>
+                <div class="card-header card-header-bordered justify-content-between mb-0 align-items-center">
+                    <h3 class="card-title">Detail Project</h3>
                 </div>
                 <div class="card-body">
                     {{-- Subject --}}
@@ -191,9 +203,14 @@
                     <div class="d-flex">
                         <p class="col-2 mb-0 fw-bold">Status</p>
                         <p class="me-2 mb-0">:</p>
-                        <p class="alert-label-info px-2 rounded mb-1">
-                            {{ $task->status }}
-                        <p>
+                        @if (strtolower($task->status) == 'in progress')
+                            <span class="badge alert-label-info mb-1 px-3">{{ $task->status }}</span>
+                            @if ($task->is_urgent && $task->status != 'Clear')
+                                <span class="text-danger fw-bold ms-2">*Urgent</span>
+                            @endif
+                        @else
+                            <span class="badge alert-label-primary mb-1 px-3">{{ $task->status }}</span>
+                        @endif
                     </div>
                     <hr class="mt-1 mb-2">
                     {{-- Departemen --}}
@@ -201,7 +218,7 @@
                         <p class="col-2 mb-0 fw-bold">Dept.</p>
                         <p class="me-2 mb-1">:</p>
                         <p class="mb-0">
-                            {{ $task->department }}
+                            {{ $task->department->name }}
                         </p>
                     </div>
                     <hr class="mt-1 mb-2">

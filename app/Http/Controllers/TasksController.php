@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Departments;
 use Illuminate\Http\Request;
 use App\Models\Tasks;
-use App\Models\TaskLogs;
-use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -22,21 +21,26 @@ public function store(Request $request)
 {
     $validated = $request->validate([
         'name' => 'required|string|max:255',
-        'department' => 'required|string|max:255',
+        'department_id' => 'required|string|max:255',
         'pic_name' => 'required|string|max:255',
     ]);
 
-        $date = now()->format('Ymd');
-        $random = Str::upper(Str::random(4));
-        $code = "TASK-{$date}-{$random}";
+        $date = now()->format('dmy');
+        $department = Departments::find($validated['department_id']);
+        $count = Tasks::whereDate('created_at', now())
+                ->where('department_id', $validated['department_id'])
+                ->count() + 1;
+        $prefix = $request->has('is_urgent') ? 'RDUR' : 'RD';
+        $code = "$prefix-{$date}-{$department->code}-{$count}";
         
         try {
         $task = Tasks::create([
             'name' => $validated['name'],
-            'department' => $validated['department'],
+            'department_id' => $validated['department_id'],
             'pic_name' => $validated['pic_name'],
             'description' =>  $request->description ?? 'Deskripsi belum ditambahkan. Silahkan tambahkan deskripsi untuk event ini.',
-            'code' => $code,    
+            'code' => $code,
+            'is_urgent' => $request->has('is_urgent'),
         ]);
 
         if(!$task) {
@@ -50,7 +54,6 @@ public function store(Request $request)
         'error'   => $e->getMessage(),
         'request' => $request->all(),
     ]);
-
         return redirect()->back()->with('error', 'Terjadi error: ' . $e->getMessage());
     }
     }

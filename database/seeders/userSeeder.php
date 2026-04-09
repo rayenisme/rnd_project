@@ -7,9 +7,6 @@ use Illuminate\Database\Seeder;
 
 class userSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         DB::table('users')->insert([
@@ -17,6 +14,13 @@ class userSeeder extends Seeder
         'username' => 'admin',
         'email' => 'admin@example.com',
         'password' => bcrypt('admin123')
-    ]);
+    ],
+    [
+                'name' => 'Regular User',
+                'username' => 'user',
+                'email' => 'user@example.com',
+                'password' => bcrypt('user123'),
+            ],
+    );
     }
 }
