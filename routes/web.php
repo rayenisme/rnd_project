@@ -17,6 +17,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/index', [HomeController::class, 'index']);
     Route::get('/event', [HomeController::class, 'event']);
+    Route::get('/department', [HomeController::class, 'department']);
 
     Route::get('/register', [authController::class, 'register']);
 

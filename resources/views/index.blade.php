@@ -27,11 +27,11 @@
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="avatar avatar-sm avatar-label-info">
-                                            <i class="mdi mdi-webhook mt-1"></i>
+                                            <i class="fas fa-spinner mt-1"></i>
                                         </div>
                                         <div class="ms-3">
-                                            <p class="text-info mb-1">IN PORGRESS</p>
-                                            <h4 class="mb-0">{{ $inProgressCount }} Event</h4>
+                                            <p class="text-info mb-1 fw-bold">IN PORGRESS</p>
+                                            <h5 class="mb-0">{{ $inProgressCount }} Event</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -43,11 +43,11 @@
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="avatar avatar-sm avatar-label-success">
-                                            <i class="mdi mdi-cash-usd-outline mt-1"></i>
+                                            <i class="fas fa-clipboard-check mt-1"></i>
                                         </div>
                                         <div class="ms-3">
-                                            <p class="text-success mb-1">CLEAR</p>
-                                            <h4 class="mb-0">{{ $clearCount }} Event</h4>
+                                            <p class="text-success mb-1 fw-bold">CLEAR</p>
+                                            <h5 class="mb-0">{{ $clearCount }} Event</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -59,11 +59,11 @@
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="avatar avatar-sm avatar-label-danger">
-                                            <i class="mdi mdi-buffer mt-1"></i>
+                                            <i class=" fas fa-exclamation mt-1"></i>
                                         </div>
                                         <div class="ms-3">
-                                            <p class="text-danger mb-1">URGENT</p>
-                                            <h4 class="mb-0">{{ $urgentCount }} Event</h4>
+                                            <p class="text-danger mb-1 fw-bold">URGENT</p>
+                                            <h5 class="mb-0">{{ $urgentCount }} Event</h5>
                                         </div>
                                     </div>
                                 </div>

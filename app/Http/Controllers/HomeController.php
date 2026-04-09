@@ -66,4 +66,8 @@ class HomeController extends Controller
             return redirect()->back()->with('error', 'Terjadi error saat mengambil data');
         }
     }
+
+    public function department(){
+        return view('pages-comingsoon');
+    }
 }

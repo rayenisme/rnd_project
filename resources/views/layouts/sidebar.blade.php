@@ -18,8 +18,17 @@
 
                 <li>
                     <a href="{{ url('/event') }}" class="">
-                        <i class="fas fa-desktop"></i>
+                        <i class="fas fa-clipboard-list"></i>
                         <span>Event</span>
+                    </a>
+                </li>
+
+                <li class="menu-title">Master</li>
+
+                <li>
+                    <a href="{{ url('/department') }}" class="">
+                        <i class="fas fa-city"></i>
+                        <span>Departments</span>
                     </a>
                 </li>
             </ul>
