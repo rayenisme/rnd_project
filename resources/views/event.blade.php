@@ -1,12 +1,16 @@
 @extends('layouts.master-without-page-title')
 
 @section('title')
-    Document
+    Jurnal Harian
 @endsection
 
 @section('css')
     <!-- DataTables -->
     <link href="{{ URL::asset('build/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet"
+        type="text/css" />
+
+    <!-- buttons datatable -->
+    <link href="{{ URL::asset('build/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css') }}" rel="stylesheet"
         type="text/css" />
 
     <!-- Responsive datatable examples -->
@@ -19,6 +23,9 @@
 
     <!-- Sweet Alert-->
     <link rel="stylesheet" href="{{ URL::asset('build/libs/sweetalert2/dist/sweetalert2.min.css') }}">
+
+    <link href="{{ URL::asset('build/libs/bootstrap-datetime-picker/css/bootstrap-datetimepicker.min.css') }}"
+        rel="stylesheet">
 @endsection
 
 @section('content')
@@ -26,12 +33,12 @@
         <div class="col-12">
             <div class="page-title-box d-flex align-items-center justify-content-between">
                 <div>
-                    <h4 class="fs-16 fw-semibold mb-1 mb-md-2">Project Event R&D</h4>
+                    <h4 class="fs-16 fw-semibold mb-1 mb-md-2">Jurnal Harian</h4>
                 </div>
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="{{ url('index') }}">R&D</a></li>
-                        <li class="breadcrumb-item active">Event</li>
+                        <li class="breadcrumb-item"><a href="{{ url('index') }}">My Journal</a></li>
+                        <li class="breadcrumb-item active">Jurnal Harian</li>
                     </ol>
                 </div>
             </div>
@@ -41,9 +48,6 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">Project Events</h4>
-                </div>
                 <div class="card-body">
                     {{-- Button Modals --}}
                     <div class="d-flex justify-content-between mb-2">
@@ -74,13 +78,16 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="input-group auth-form-group-custom mb-3">
-                                        <span class="input-group-text bg-primary bg-opacity-10 fs-16 " id="basic-addon1"><i
-                                                class="mdi mdi-calendar-outline auti-custom-input-icon"></i></span>
+                                        <span class="input-group-text bg-primary bg-opacity-10 fs-16 " id="basic-addon1">
+                                            <i class="mdi mdi-calendar-outline auti-custom-input-icon">
+                                            </i>
+                                        </span>
                                         <input type="text" class="form-control"
                                             placeholder="{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}"
                                             aria-label="Username" name="pic_name" aria-describedby="basic-addon1" readonly>
                                     </div>
-                                    <form action="{{ route('tasks.store') }}" method="POST" id="formTask" novalidate>
+                                    <form action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data"
+                                        id="formTask" novalidate>
                                         @csrf
                                         <div class="input-group auth-form-group-custom mb-3">
                                             <span class="input-group-text bg-primary bg-opacity-10 fs-16 "
@@ -118,9 +125,31 @@
                                             <div class="invalid-feedback">Subject minimal 10 karakter</div>
                                         </div>
 
+                                        <div class="mb-3">
+                                            <label class="form-label mb-1">Foto</label>
+
+                                            <input class="form-control" type="file" name="image[]" id="formFile"
+                                                multiple>
+                                            <div class="invalid-feedback" id="imageError">
+                                                Foto wajib diupload minimal 1
+                                            </div>
+
+                                            <!-- Preview WhatsApp Style -->
+                                            <div class="mt-3">
+                                                <!-- gambar utama -->
+                                                <div id="mainPreview" class="text-center mb-2">
+                                                    <img id="mainImage" class="rounded"
+                                                        style="max-height:200px; object-fit:contain; display:none;">
+                                                </div>
+
+                                                <!-- thumbnail -->
+                                                <div id="thumbPreview" class="d-flex gap-2 flex-wrap"></div>
+                                            </div>
+                                        </div>
+
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" value="1" id="is_urgent"
-                                                name="is_urgent">
+                                            <input class="form-check-input" type="checkbox" value="1"
+                                                id="is_urgent" name="is_urgent">
                                             <label class="form-check-label fw-bold text-danger" for="is_urgent">
                                                 Tandai sebagai Urgent
                                             </label>
@@ -144,57 +173,64 @@
                         </div>
                     </div>
 
-                    <table id="taskTable" class="table table-hover table-bordered table-striped dt-responsive nowrap"
-                        style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                        <thead>
-                            <tr>
-                                <th class="text-center">No</th>
-                                <th class="text-center">Tanggal</th>
-                                <th class="text-center">Nomor Project</th>
-                                <th class="text-center">Subject</th>
-                                <th class="text-center">Departemen</th>
-                                <th class="text-center">Status</th>
-                                <th class="text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($tasks as $index => $task)
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table id="taskTable" class="table table-hover table-bordered table-striped dt-responsive nowrap"
+                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <thead>
                                 <tr>
-                                    <td class="text-center">{{ $index + 1 }}</td>
-                                    <td>{{ $task->created_at->translatedFormat('l, d F Y') }}</td>
-                                    <td>{{ $task->code }}</td>
-                                    <td>{{ $task->name }}</td>
-                                    <td>{{ $task->department->name }}</td>
-                                    <td>
-                                        <span class="d-none">{{ $task->is_urgent ? 'Urgent' : 'Normal' }}</span>
-                                        @if (strtolower($task->status) == 'in progress')
-                                            <span class="badge alert-label-info">
-                                                @if ($task->is_urgent && $task->status != 'Clear')
-                                                    <span class="urgent-dot"></span>
-                                                @endif
-                                                {{ $task->status }}
-                                            </span>
-                                        @else
-                                            <span class="badge alert-label-primary">
-                                                @if ($task->is_urgent && $task->status != 'Clear')
-                                                    <span class="urgent-dot"></span>
-                                                @endif
-                                                {{ $task->status }}
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="{{ route('event.show', $task->id) }}" class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye me-1"></i>
-                                            detail
-                                        </a>
-                                    </td>
-
+                                    <th class="text-center">No</th>
+                                    <th class="text-center">Tanggal</th>
+                                    <th class="text-center">Nomor Project</th>
+                                    <th class="text-center">Subject</th>
+                                    <th class="text-center">Departemen</th>
+                                    <th class="d-none">Priority</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="d-none">Timeline</th>
+                                    <th class="text-center">Aksi</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
+                            </thead>
+                            <tbody>
+                                @foreach ($tasks as $index => $task)
+                                    <tr>
+                                        <td class="text-center">{{ $index + 1 }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($task->created_at)->translatedFormat('l, d F Y') }}
+                                        </td>
+                                        <td>{{ $task->code }}</td>
+                                        <td>{{ $task->name }}</td>
+                                        <td>{{ $task->department_name }}</td>
+                                        <td class="d-none">{{ $task->is_urgent ? 'Urgent' : 'Normal' }}</td>
+                                        <td>
+                                            <span class="d-none">{{ $task->is_urgent ? 'Urgent' : 'Normal' }}</span>
+                                            @if (strtolower($task->status) == 'in progress')
+                                                <span class="badge alert-label-info">
+                                                    {{ $task->status }}
+                                                    @if ($task->is_urgent && $task->status != 'Clear')
+                                                        <span class="urgent-dot ms-1"></span>
+                                                    @endif
+                                                </span>
+                                            @else
+                                                <span class="badge alert-label-primary">
+                                                    @if ($task->is_urgent && $task->status != 'Clear')
+                                                        <span class="urgent-dot"></span>
+                                                    @endif
+                                                    {{ $task->status }}
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td class="d-none">{!! nl2br(e($task->timeline)) !!}</td>
+                                        <td class="text-center">
+                                            <a href="{{ route('event.show', $task->id) }}" class="btn btn-info btn-sm">
+                                                <i class="fas fa-eye me-1"></i>
+                                                detail
+                                            </a>
+                                        </td>
 
-                    </table>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -215,11 +251,26 @@
     <script src="{{ URL::asset('build/js/pages/datatables-base.init.js') }}"></script>
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
 
+    <!-- buttons examples -->
+    <script src="{{ URL::asset('build/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ URL::asset('build/libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js') }}"></script>
+    <script src="{{ URL::asset('build/libs/jszip/dist/jszip.min.js') }}"></script>
+    <script src="{{ URL::asset('build/libs/pdfmake/build/pdfmake.min.js') }}"></script>
+    <script src="{{ URL::asset('build/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+    <script src="{{ URL::asset('build/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ URL::asset('build/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ URL::asset('build/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+
     <!-- Sweet Alerts js -->
     <script src="{{ URL::asset('build/libs/sweetalert2/dist/sweetalert2.min.js') }}"></script>
 
     <!-- Sweet alert init js-->
     <script src="{{ URL::asset('build/js/pages/sweet-alerts.init.js') }}"></script>
+
+    <!-- Bootstrap datepicker -->
+    <script src="{{ URL::asset('build/libs/moment/min/moment.min.js') }}"></script>
+    <script src="{{ URL::asset('build/libs/bootstrap-datetime-picker/js/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ URL::asset('build/js/pages/form-datetimepicker.init.js') }}"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -268,8 +319,9 @@
             const department = document.getElementById("department_id");
             const pic = document.getElementById("pic");
             const subject = document.getElementById("subject");
+            const imageInput = document.getElementById("formFile");
 
-            let isSubmitted = false; // 🔥 kunci utama
+            let isSubmitted = false;
 
             // ===== VALIDATION FUNCTIONS =====
             function validateDepartment(showAlert = false) {
@@ -360,6 +412,57 @@
                 return true;
             }
 
+            function validateImage(showAlert = false) {
+                const files = imageInput.files;
+
+                if (!files || files.length === 0) {
+                    imageInput.classList.add("is-invalid");
+                    imageInput.classList.remove("is-valid");
+
+                    if (showAlert) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Foto belum dipilih',
+                            text: 'Minimal upload 1 foto'
+                        });
+                    }
+                    return false;
+                }
+
+                // validasi setiap file
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+
+                    // tipe file
+                    if (!file.type.startsWith('image/')) {
+                        if (showAlert) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Format tidak valid',
+                                text: 'File harus berupa gambar'
+                            });
+                        }
+                        return false;
+                    }
+
+                    // size max 5MB
+                    if (file.size > 5 * 1024 * 1024) {
+                        if (showAlert) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Ukuran terlalu besar',
+                                text: 'Maksimal ukuran gambar 5MB'
+                            });
+                        }
+                        return false;
+                    }
+                }
+
+                imageInput.classList.remove("is-invalid");
+                imageInput.classList.add("is-valid");
+                return true;
+            }
+
             department.addEventListener("change", () => validateDepartment(false));
             pic.addEventListener("input", () => validatePic(false));
             subject.addEventListener("input", () => validateSubject(false));
@@ -367,7 +470,7 @@
             // ===== SUBMIT =====
             form.addEventListener("submit", function(e) {
 
-                isSubmitted = true; // 🔥 tandai sudah submit
+                isSubmitted = true;
 
                 // cek satu per satu (alert hanya muncul di sini)
                 if (!validateDepartment(true)) {
@@ -388,6 +491,12 @@
                     return;
                 }
 
+                if (!validateImage(true)) {
+                    e.preventDefault();
+                    imageInput.focus();
+                    return;
+                }
+
             });
 
         });
@@ -397,35 +506,77 @@
         let departments = @json($departments);
     </script>
 
+
+
     <script>
         $(document).ready(function() {
 
             var table = $('#taskTable').DataTable({
                 lengthChange: false,
                 ordering: true,
+                responsive: false,
+                scrollx: true,
+                dom: 'frtip',
+
+                // buttons: [{
+                //     extend: 'excelHtml5',
+                //     text: '<i class="bi bi-file-earmark-excel"></i> Export Excel',
+                //     className: 'btn btn-success btn-sm',
+                //     title: 'Data Task',
+                //     exportOptions: {
+                //         columns: function(idx) {
+                //             return idx !== 0 && idx !== 8;
+                //         },
+                //         format: {
+                //             body: function(data, row, column, node) {
+
+                //                 if (column === 5) {
+                //                     let status = $(node).find('.badge').text().trim();
+                //                     return `${status}`;
+                //                 }
+
+                //                 if (column === 7) {
+                //                     let text = data || '';
+
+                //                     text = text
+                //                         .replace(/<br\s*\/?>/gi, '\n')
+                //                         .replace(/<\/?br>/gi, '\n');
+
+                //                     text = $('<div>').html(text).text();
+
+                //                     return text
+                //                         .split(/(?=\d{2}-\d{2}-\d{4})/g)
+                //                         .map(e => e.trim())
+                //                         .join('\n')
+                //                         .trim();
+                //                 }
+
+                //                 return $('<div>').html(data || '').text().trim();
+                //             }
+                //         }
+                //     }
+                // }],
+
                 columnDefs: [{
                     orderable: false,
-                    targets: [1, 2, 3, 4, 5, 6]
+                    targets: [1, 2, 3, 4, 5, 6, 7, 8]
                 }]
             });
 
-            // Sembunyikan search default
             $('#taskTable_filter').hide();
 
-            // Tombol reset filter
             $('#resetFilters').on('click', function() {
-                table.columns().search('').draw(); // reset semua filter
+                table.columns().search('').draw();
 
                 $('#taskTable thead th').each(function() {
                     let th = $(this);
-                    let title = th.data('title'); // simpan title awal sebelumnya
+                    let title = th.data('title');
                     th.empty().text(title);
                 });
 
                 $('#toggleUrgent').prop('checked', false);
             });
 
-            // Switch urgent filter
             $('#toggleUrgent').on('change', function() {
                 if ($(this).is(':checked')) {
                     table.column(5).search('Urgent').draw();
@@ -434,12 +585,10 @@
                 }
             });
 
-            // Simpan judul awal header
             $('#taskTable thead th').each(function() {
                 $(this).data('title', $(this).text());
             });
 
-            // Event klik header untuk memunculkan filter
             $('#taskTable thead').on('click', 'th', function(e) {
 
                 e.stopPropagation();
@@ -449,34 +598,34 @@
                 let index = th.index();
                 let title = th.data('title');
 
-                if (index === 0 || index === 6) return;
+                if (index === 0 || index === 8) return;
 
                 if (th.find('input, select').length > 0) return;
 
                 let colDef = table.settings()[0].aoColumns[index];
                 if (colDef.bSortable) return;
 
-                // Kosongkan isi th
                 th.empty();
 
-                // Kolom Departemen
                 if (index === 4) {
+
                     let select = $(
                         '<select class="form-control form-control-sm"><option value="">Semua</option></select>'
                     );
+
                     departments.forEach(function(dept) {
                         select.append(`<option value="${dept.name}">${dept.name}</option>`);
                     });
+
                     th.append(select);
                     select.focus();
 
                     select.on('change', function() {
                         table.column(index).search($(this).val()).draw();
                     });
-                }
 
-                // Kolom Status
-                else if (index === 5) {
+                } else if (index === 6) {
+
                     let select = $(`
                 <select class="form-control form-control-sm">
                     <option value="">Semua</option>
@@ -484,19 +633,20 @@
                     <option value="Clear">Clear</option>
                 </select>
             `);
+
                     th.append(select);
                     select.focus();
 
                     select.on('change', function() {
                         table.column(index).search($(this).val()).draw();
                     });
-                }
 
-                // Kolom lain (Tanggal, Kode, Subject)
-                else {
-                    let input = $(
-                        `<input type="text" class="form-control form-control-sm" placeholder="Cari ${title}" />`
-                    );
+                } else {
+
+                    let input = $(`
+                <input type="text" class="form-control form-control-sm" placeholder="Cari ${title}" />
+            `);
+
                     th.append(input);
                     input.focus();
 
@@ -504,9 +654,65 @@
                         table.column(index).search(this.value).draw();
                     });
                 }
-
             });
 
         });
+    </script>
+
+    {{-- Preview Image Form --}}
+    <script>
+        let selectedFiles = [];
+
+        document.getElementById('formFile').addEventListener('change', function(e) {
+            selectedFiles = Array.from(e.target.files);
+            renderPreview();
+        });
+
+        function renderPreview() {
+            const container = document.getElementById('thumbPreview');
+            container.innerHTML = '';
+
+            selectedFiles.forEach((file, index) => {
+                if (!file.type.startsWith('image/')) return;
+
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'position-relative';
+
+                    wrapper.innerHTML = `
+                <img src="${e.target.result}" 
+                    class="rounded border"
+                    style="width:70px; height:70px; object-fit:contain; background:#f8f9fa;">
+
+                <button type="button"
+                    class="btn btn-danger btn-sm position-absolute top-0 end-0"
+                    style="padding:2px 5px; font-size:10px;">×</button>
+            `;
+
+                    // tombol hapus
+                    wrapper.querySelector('button').addEventListener('click', () => {
+                        selectedFiles.splice(index, 1);
+                        updateInputFiles();
+                        renderPreview();
+                    });
+
+                    container.appendChild(wrapper);
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function updateInputFiles() {
+            const dataTransfer = new DataTransfer();
+
+            selectedFiles.forEach(file => {
+                dataTransfer.items.add(file);
+            });
+
+            document.getElementById('formFile').files = dataTransfer.files;
+        }
     </script>
 @endsection

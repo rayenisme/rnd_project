@@ -10,6 +10,7 @@ class userSeeder extends Seeder
     public function run(): void
     {
         DB::table('users')->insert([
+    [
         'name' => 'Admin User',
         'username' => 'admin',
         'email' => 'admin@example.com',
@@ -21,6 +22,6 @@ class userSeeder extends Seeder
                 'email' => 'user@example.com',
                 'password' => bcrypt('user123'),
             ],
-    );
+        ]);
     }
 }

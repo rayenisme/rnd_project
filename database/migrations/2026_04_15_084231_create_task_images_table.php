@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('task_logs', function (Blueprint $table) {
+        Schema::create('task_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('task_id')->constrained('tasks')->onDelete('cascade');
-            $table->dateTime('log_date');
-            $table->text('description');
-            $table->text('note')->nullable();
-            $table->string('image')->nullable();
+            $table->foreignId('task_id')->constrained()->onDelete('cascade');
+            $table->string('image_path');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('task_logs');
+        Schema::dropIfExists('task_images');
     }
 };

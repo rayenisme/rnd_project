@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TasksController;
 use App\Http\Controllers\TaskLogsController;
 use App\Http\Controllers\authController;
+use App\Http\Controllers\DepartmentsController;
 use App\Models\Departments;
 use App\Models\Tasks;
 
@@ -17,16 +18,21 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/index', [HomeController::class, 'index']);
     Route::get('/event', [HomeController::class, 'event']);
+    Route::get('/report/event', [HomeController::class, 'reportEvent']);
     Route::get('/department', [HomeController::class, 'department']);
 
     Route::get('/register', [authController::class, 'register']);
+
+    Route::post('/tasks/{task}/upload-photo', [TasksController::class, 'uploadPhoto'])
+    ->name('tasks.uploadPhoto');
 
     Route::post('/event', [TasksController::class, 'store'])->name('tasks.store');
     Route::get('/event/{id}', [TasksController::class, 'show'])->name('event.show');
     Route::post('/event/{id}', [TaskLogsController::class, 'store'])->name('event.store');
     Route::put('/event/{id}/description', [TaskLogsController::class, 'updateDescription'])
-        ->name('event.updateDescription');
-
+    ->name('event.updateDescription');
+    
+    Route::post('/department', [DepartmentsController::class, 'store'])->name('department.store');
     Route::get('/profile', [authController::class, 'profile'])->name('profile');
     Route::post('/profile/update', [authController::class, 'update']);
     Route::post('/password/update', [authController::class, 'passwordUpdate']);

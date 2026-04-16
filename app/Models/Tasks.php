@@ -41,6 +41,10 @@ class Tasks extends Model
 {
     return $this->belongsTo(Departments::class);
 }
+public function images()
+{
+    return $this->hasMany(TaskImages::class, 'task_id');
+}
 
     protected static function boot()
 {
@@ -49,7 +53,7 @@ class Tasks extends Model
     static::created(function ($task) {
             TaskLogs::create([
             'task_id' => $task->id,
-            'log_date' => now(),
+            'log_date' =>  $task->created_at ?? now(),
             'description' => 'Event telah diinisialisasi.',
         ]);
     });

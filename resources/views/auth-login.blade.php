@@ -17,12 +17,12 @@
                 <div class="card mb-0">
                     <div class="card-body">
                         <div class="text-center">
-                            <a href="index.html" class="logo-dark">
-                                <img src="{{ URL::asset('build/images/r&d.svg') }}" alt="" height="15"
+                            <a href="{{ url('/') }}" class="logo-dark">
+                                <img src="{{ URL::asset('build/images/myjournal.svg') }}" alt="" height="34"
                                     class="auth-logo logo-dark mx-auto">
                             </a>
-                            <a href="index.html" class="logo-dark">
-                                <img src="{{ URL::asset('build/images/r&d.svg') }}" alt="" height="15"
+                            <a href="{{ url('/') }}" class="logo-dark">
+                                <img src="{{ URL::asset('build/images/myjournal.svg') }}" alt="" height="34"
                                     class="auth-logo logo-light mx-auto">
                             </a>
 
@@ -75,7 +75,7 @@
                                     document.write(new Date().getFullYear())
                                 </script>
                                 ©
-                                Research & Development.
+                                My Journal.
                             </p>
                         </div>
                     </div>

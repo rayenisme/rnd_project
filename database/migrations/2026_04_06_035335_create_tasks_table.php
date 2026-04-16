@@ -12,15 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
-            $table->id();
-            $table->string('code')->unique();
-            $table->string('name');
-            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade');
-            $table->string('pic_name');
-            $table->text('description');
-            $table->boolean('is_urgent')->default(0);
-            $table->enum('status', ['In Progress', 'Clear'])->default('In Progress');
-            $table->timestamps();
+            $table->id(); 
+            $table->string('code')->unique(); 
+            $table->string('name'); 
+            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade'); $table->string('pic_name'); 
+            $table->text('description'); 
+            $table->boolean('is_urgent')->default(0); 
+            $table->enum('status', ['In Progress', 'Clear'])->default('In Progress'); $table->timestamps();
         });
     }
 

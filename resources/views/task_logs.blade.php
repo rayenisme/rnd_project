@@ -42,7 +42,7 @@
     </div>
 
     <div class="row">
-        <div class="col-xl-6">
+        <div class="col-xl-5">
             <div class="card border">
                 <div class="card-header card-header-bordered justify-content-between">
                     <h3 class="card-title">Timeline</h3>
@@ -89,8 +89,10 @@
 
                                     <div class="mb-3">
                                         <label for="formFile" class="form-label mb-1">Foto</label> <input
-                                            class="form-control" type="file" name="image" id="formFile" />
+                                            class="form-control" type="file" name="image[]" id="formFile" multiple />
+                                        <div id="thumbPreview" class="d-flex gap-2 mt-2 flex-wrap"></div>
                                     </div>
+
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="checkbox" id="is_clear" name="is_clear"
                                             value="1" />
@@ -107,8 +109,6 @@
                     </div>
                 </div>
                 {{-- Modal End --}}
-
-
                 <div class="card-body">
                     <div class="timeline">
                         @foreach ($task->logs as $log)
@@ -117,7 +117,9 @@
                                     <i class="marker marker-dot text-primary"></i>
                                 </div>
                                 <div class="timeline-content">
-                                    <p class="mb-0 fw-bold">{{ $log->created_at->translatedFormat('l, d F Y') }}</p>
+                                    <p class="mb-0 fw-bold">
+                                        {{ \Carbon\Carbon::parse($log->log_date)->translatedFormat('l, d F Y') }}
+                                    </p>
                                     <p class="mb-0">{{ \Illuminate\Support\Str::limit($log->description, 60) }}</p>
 
                                     @if ($log->note || $log->image)
@@ -160,13 +162,22 @@
 
                                                         {{-- Bucket Production --}}
                                                         @if ($log->image)
-                                                            <a class="col-3 mb-3"
-                                                                href="{{ Storage::disk('s3')->url($log->image) }}"
-                                                                target="_blank">
-                                                                <img src="{{ Storage::disk('s3')->url($log->image) }}"
-                                                                    class="rounded image-preview"
-                                                                    style="width:80px; height:80px; object-fit:cover;">
-                                                            </a>
+                                                            @php
+                                                                $images = json_decode($log->image, true);
+                                                                $images = is_array($images) ? $images : [$log->image];
+                                                            @endphp
+                                                            <div class="row">
+                                                                @foreach ($images as $img)
+                                                                    <div class="col-3 mb-3">
+                                                                        <a href="{{ Storage::disk('s3')->url($img) }}"
+                                                                            target="_blank">
+                                                                            <img src="{{ Storage::disk('s3')->url($img) }}"
+                                                                                class="rounded border image-preview w-100"
+                                                                                style="height:60px; object-fit:contain;">
+                                                                        </a>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
                                                         @endif
 
                                                     </div>
@@ -184,7 +195,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-6">
+        <div class="col-xl-7">
             <div class="card border">
                 <div class="card-header card-header-bordered justify-content-between mb-0 align-items-center">
                     <h3 class="card-title">Detail Project</h3>
@@ -229,6 +240,51 @@
                         <p class="me-2 mb-0">
                             {{ $task->pic_name }}
                         </p>
+                    </div>
+                    <hr class="mt-1 mb-2">
+                    {{-- FOTO --}}
+                    <div class="d-flex align-items-start">
+                        <p class="col-2 mb-0 fw-bold">Foto</p>
+                        <p class="me-2 mb-1">:</p>
+
+                        <div class="flex-grow-1 d-flex flex-wrap gap-2">
+                            @forelse ($task->images as $img)
+                                <a href="{{ Storage::disk('s3')->url($img->image_path) }}" target="_blank">
+                                    <img src="{{ Storage::disk('s3')->url($img->image_path) }}" class="rounded border"
+                                        style="width:60px; height:60px; object-fit:contain; background:#f8f9fa;">
+                                </a>
+                            @empty
+                                <div class="modal fade" id="uploadFotoModal{{ $task->id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <form action="{{ route('tasks.uploadPhoto', $task->id) }}" method="POST"
+                                            enctype="multipart/form-data">
+                                            @csrf
+
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5>Upload Foto</h5>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    <input type="file" name="image[]" class="form-control" multiple
+                                                        required>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-primary">Upload</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <button type="button"
+                                    class="btn btn-sm btn-info mb-1 {{ $task->status == 'Clear' ? 'd-none' : '' }}"
+                                    id="addFoto" data-bs-toggle="modal"
+                                    data-bs-target="#uploadFotoModal{{ $task->id }}">
+                                    Attach Foto
+                                </button>
+                            @endforelse
+                        </div>
                     </div>
                     <hr class="mt-1 mb-2">
                     {{-- Deskripsi --}}
@@ -507,6 +563,95 @@
 
         });
     </script>
+
+    {{-- Preview Image Form --}}
+    <script>
+        let selectedFiles = [];
+
+        document.getElementById('formFile').addEventListener('change', function(e) {
+            selectedFiles = Array.from(e.target.files);
+            renderPreview();
+        });
+
+        function renderPreview() {
+            const thumbContainer = document.getElementById('thumbPreview');
+            const mainImage = document.getElementById('mainImage');
+
+            thumbContainer.innerHTML = '';
+
+            if (selectedFiles.length === 0) {
+                mainImage.style.display = 'none';
+                return;
+            }
+
+            // tampilkan gambar pertama sebagai utama
+            showMainImage(selectedFiles[0]);
+
+            selectedFiles.forEach((file, index) => {
+                if (!file.type.startsWith('image/')) return;
+
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'position-relative';
+
+                    wrapper.innerHTML = `
+                <img src="${e.target.result}" 
+                    class="rounded border"
+                    style="width:60px; height:60px; object-fit:cover; cursor:pointer;">
+
+                <button type="button"
+                    class="btn btn-danger btn-sm position-absolute top-0 end-0"
+                    style="padding:2px 5px; font-size:10px;">×</button>
+            `;
+
+                    const img = wrapper.querySelector('img');
+                    const btn = wrapper.querySelector('button');
+
+                    // klik thumbnail → jadi main image
+                    img.addEventListener('click', () => {
+                        showMainImage(file);
+                    });
+
+                    // hapus gambar
+                    btn.addEventListener('click', () => {
+                        selectedFiles.splice(index, 1);
+                        updateInputFiles();
+                        renderPreview();
+                    });
+
+                    thumbContainer.appendChild(wrapper);
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function showMainImage(file) {
+            const reader = new FileReader();
+            const mainImage = document.getElementById('mainImage');
+
+            reader.onload = function(e) {
+                mainImage.src = e.target.result;
+                mainImage.style.display = 'block';
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        // 🔥 penting: update input file (biar benar-benar kehapus)
+        function updateInputFiles() {
+            const dataTransfer = new DataTransfer();
+
+            selectedFiles.forEach(file => {
+                dataTransfer.items.add(file);
+            });
+
+            document.getElementById('formFile').files = dataTransfer.files;
+        }
+    </script>
+
     {{-- <script>
         document.addEventListener("DOMContentLoaded", function() {
 

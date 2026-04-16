@@ -14,12 +14,12 @@
                     </a>
                 </li>
 
-                <li class="menu-title">Project</li>
+                <li class="menu-title">Jurnal</li>
 
                 <li>
                     <a href="{{ url('/event') }}" class="">
                         <i class="fas fa-clipboard-list"></i>
-                        <span>Event</span>
+                        <span>jurnal Harian</span>
                     </a>
                 </li>
 
@@ -28,7 +28,16 @@
                 <li>
                     <a href="{{ url('/department') }}" class="">
                         <i class="fas fa-city"></i>
-                        <span>Departments</span>
+                        <span>Departemen</span>
+                    </a>
+                </li>
+
+                <li class="menu-title">Laporan</li>
+
+                <li>
+                    <a href="{{ url('/report/event') }}" class="">
+                        <i class="fas fa-file"></i>
+                        <span>Laporan Jurnal</span>
                     </a>
                 </li>
             </ul>

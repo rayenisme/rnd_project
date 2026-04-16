@@ -8,19 +8,19 @@
         <div class="navbar-logo-box">
             <a href="{{ url('index') }}" class="logo logo-dark">
                 <span class="logo-sm">
-                    <img src="{{ URL::asset('build/images/brands/R&D-sm.svg') }}" alt="logo-sm-dark" height="9">
+                    <img src="{{ URL::asset('build/images/myjournal-logo.svg') }}" alt="logo-sm-dark" height="24">
                 </span>
                 <span class="logo-lg">
-                    <img src="{{ URL::asset('build/images/brands/r&d.svg') }}" alt="logo-dark" height="9">
+                    <img src="{{ URL::asset('build/images/myjournal.svg') }}" alt="logo-dark" height="28">
                 </span>
             </a>
 
             <a href="{{ url('index') }}" class="logo logo-light">
                 <span class="logo-sm">
-                    <img src="{{ URL::asset('build/images/brands/R&D-sm.svg') }}" alt="logo-sm-light" height="9">
+                    <img src="{{ URL::asset('build/images/myjournal-logo.svg') }}" alt="logo-sm-light" height="24">
                 </span>
                 <span class="logo-lg">
-                    <img src="{{ URL::asset('build/images/brands/r&d.svg') }}" alt="logo-light" height="9">
+                    <img src="{{ URL::asset('build/images/myjournal.svg') }}" alt="logo-light" height="28">
                 </span>
             </a>
 
