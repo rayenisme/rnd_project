@@ -18,11 +18,11 @@
                     <div class="card-body">
                         <div class="text-center">
                             <a href="{{ url('/') }}" class="logo-dark">
-                                <img src="{{ URL::asset('build/images/myjournal.svg') }}" alt="" height="34"
+                                <img src="{{ asset('assets/images/myjournal.svg') }}" alt="" height="34"
                                     class="auth-logo logo-dark mx-auto">
                             </a>
                             <a href="{{ url('/') }}" class="logo-dark">
-                                <img src="{{ URL::asset('build/images/myjournal.svg') }}" alt="" height="34"
+                                <img src="{{ asset('assets/images/myjournal.svg') }}" alt="" height="34"
                                     class="auth-logo logo-light mx-auto">
                             </a>
 
