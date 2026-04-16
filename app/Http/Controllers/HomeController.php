@@ -58,22 +58,28 @@ class HomeController extends Controller
         try {
 
         $tasks = DB::table('tasks as t')
-                ->leftJoin('task_logs as tl', 't.id', '=', 'tl.task_id')
                 ->leftJoin('departments as d', 't.department_id', '=', 'd.id')
                 ->select(
                     't.*',
                     'd.name as department_name',
                     DB::raw("
-                        STRING_AGG(
-                            TO_CHAR(tl.created_at, 'DD-MM-YYYY') || ' - ' || tl.description,
-                            E'\n'
-                            ORDER BY tl.created_at ASC
+                        (
+                            SELECT COALESCE(
+                                STRING_AGG(
+                                    TO_CHAR(tl.created_at, 'DD-MM-YYYY') || ' - ' || tl.description,
+                                    E'\n'
+                                    ORDER BY tl.created_at ASC
+                                ),
+                                ''
+                            )
+                            FROM task_logs tl
+                            WHERE tl.task_id = t.id
                         ) AS timeline
                     ")
                 )
-                ->groupBy('t.id')
                 ->orderBy('t.created_at', 'desc')
-                ->get();
+                ->get();    
+                
         $departments = Departments::orderBy('name')->get();
 
         return view('event', compact('tasks', 'departments'));
@@ -100,44 +106,42 @@ class HomeController extends Controller
     }
 
     public function reportEvent()
-{
+    {
     Carbon::setLocale('id');
 
     try {
 
-        DB::statement('SET SESSION group_concat_max_len = 1000000');
+    $tasks = DB::table('tasks as t')
+        ->leftJoin('task_logs as tl', 't.id', '=', 'tl.task_id')
+        ->leftJoin('departments as d', 't.department_id', '=', 'd.id')
+        ->select(
+            't.*',
+            'd.name as department_name',
+            DB::raw("
+                COALESCE(
+                    STRING_AGG(
+                        TO_CHAR(tl.log_date, 'DD-MM-YYYY') || ' - ' || tl.description,
+                        E'\n'
+                    ORDER BY tl.log_date ASC
+                    ),
+                    ''
+                ) AS timeline
+            ")
+        )
+        ->groupBy(
+            't.id',
+            'd.name'
+        )
+        ->orderBy('t.created_at', 'desc')
+        ->get();
 
-        $tasks = DB::table('tasks as t')
-                ->leftJoin('task_logs as tl', 't.id', '=', 'tl.task_id')
-                ->leftJoin('departments as d', 't.department_id', '=', 'd.id')
-                ->select(
-                    't.*',
-                    'd.name as department_name',
-                    DB::raw("
-                        COALESCE(
-                            STRING_AGG(
-                                TO_CHAR(tl.log_date, 'DD-MM-YYYY') || ' - ' || tl.description,
-                                E'\n'
-                                ORDER BY tl.log_date ASC
-                            ),
-                            ''
-                        ) AS timeline
-                    ")
-                )
-                ->groupBy(
-                    't.id',
-                    'd.name'
-                )
-                ->orderBy('t.created_at', 'desc')
-                ->get();
+    $departments = Departments::orderBy('name')->get();
 
-        $departments = Departments::orderBy('name')->get();
-
-        return view('report_event', compact('tasks', 'departments'));
+    return view('report_event', compact('tasks', 'departments'));
 
     } catch (\Exception $e) {
         Log::error('Gagal mengambil data: ' . $e->getMessage());
         dd($e->getMessage());
     }
-}
+    }
 }
