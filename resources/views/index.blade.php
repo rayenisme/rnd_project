@@ -18,7 +18,7 @@
                 <div class="card-body pb-1">
                     <div class="row">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h3 class="fs-16 fw-medium pt-1">Events</h3>
+                            <h3 class="fs-16 fw-medium pt-1">JURNAL</h3>
                             <a href="{{ url('/event') }}" class="btn btn-outline-info">See details</a>
                         </div>
                         <div class="col-xl-4">
@@ -31,7 +31,7 @@
                                         </div>
                                         <div class="ms-3">
                                             <p class="text-info mb-1 fw-bold">IN PORGRESS</p>
-                                            <h5 class="mb-0">{{ $inProgressCount }} Event</h5>
+                                            <h5 class="mb-0">{{ $inProgressCount }} jurnal</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -47,7 +47,7 @@
                                         </div>
                                         <div class="ms-3">
                                             <p class="text-success mb-1 fw-bold">CLEAR</p>
-                                            <h5 class="mb-0">{{ $clearCount }} Event</h5>
+                                            <h5 class="mb-0">{{ $clearCount }} Jurnal</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -63,7 +63,7 @@
                                         </div>
                                         <div class="ms-3">
                                             <p class="text-danger mb-1 fw-bold">URGENT</p>
-                                            <h5 class="mb-0">{{ $urgentCount }} Event</h5>
+                                            <h5 class="mb-0">{{ $urgentCount }} Jurnal</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -333,14 +333,13 @@
                     <div class="card-body">
                         <div class="float-end">
                             <select class="form-select form-select-sm" id="departmentSelect">
-                                <option value="">All Departments</option>
+                                <option value="">Departemen</option>
                                 @foreach ($departments as $dept)
                                     <option value="{{ $dept->id }}">{{ $dept->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <h4 class="card-title mb-4 mt-0">Projects Analytics</h4>
-
+                        <h4 class="card-title mb-4 mt-0">Analitik Jurnal</h4>
                         <div id="pattern_chart" class="apex-charts" dir="ltr"></div>
 
                         <div class="row" id="statusPercentages">
@@ -351,7 +350,7 @@
             </div>
             <div class="col-xxl-12 col-xl-6">
                 <div class="card">
-                    <h3 class="mb-2 fs-16 ms-3 mt-3">Departments</h3>
+                    <h3 class="mb-2 fs-16 ms-3 mt-3">Departemen</h3>
                     <div class="card-body">
                         <div class="timeline">
                             @foreach ($departments as $department)
@@ -378,7 +377,7 @@
                                                         data-bs-target="#collapseDept{{ $department->id }}"
                                                         aria-expanded="false"
                                                         aria-controls="collapseDept{{ $department->id }}">
-                                                        Event Details
+                                                        Detail Jurnal
                                                     </button>
                                                 </h2>
 
@@ -386,7 +385,7 @@
                                                     class="accordion-collapse collapse"
                                                     data-bs-parent="#accordionDepartment{{ $department->id }}">
                                                     <div class="accordion-body">
-                                                        <p class="mb-1 me-1">Events : <span
+                                                        <p class="mb-1 me-1">Jurnal : <span
                                                                 class="alert-label-info px-2 rounded">In
                                                                 Progress :
                                                                 {{ $inProgress }}</span> - <span
@@ -394,7 +393,7 @@
                                                                 {{ $clear }}</span> - <span
                                                                 class="alert-label-danger px-2 rounded">Urgent :
                                                                 {{ $urgent }}</span></p>
-                                                        <p class="mb-1">Total Events: {{ $totalEvents }}</p>
+                                                        <p class="mb-1">Total Jurnal: {{ $totalEvents }}</p>
                                                     </div>
                                                 </div>
 
