@@ -104,7 +104,6 @@
                                     <th class="text-center">No</th>
                                     <th class="text-center">Nama Departemen</th>
                                     <th class="text-center">Kode Departemen</th>
-                                    <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -113,13 +112,6 @@
                                         <td class="text-center">{{ $index + 1 }}</td>
                                         <td>{{ $department->name }}</td>
                                         <td>{{ $department->code }}</td>
-                                        <td class="text-center">
-                                            <a href="{{ route('event.show', $department->id) }}"
-                                                class="btn btn-info btn-sm">
-                                                <i class="fas fa-eye me-1"></i>
-                                                detail
-                                            </a>
-                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -161,7 +153,7 @@
                 scrollX: window.innerWidth < 768, // hanya aktif di HP
                 columnDefs: [{
                     orderable: false,
-                    targets: [0, 3]
+                    targets: [1, 2]
                 }]
             });
 
@@ -194,11 +186,7 @@
                 let th = $(this);
                 let index = th.index();
                 let title = th.data('title');
-
-                // ❌ skip kolom No & Aksi
-                if (index === 0 || index === 3) return;
-
-                // kalau sudah ada input, skip
+                if (index === 0) return;
                 if (th.find('input').length > 0) return;
 
                 // kosongkan header
