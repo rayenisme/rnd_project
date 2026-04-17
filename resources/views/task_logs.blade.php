@@ -26,15 +26,15 @@
         <div class="col-12">
             <div class="page-title-box d-flex align-items-center justify-content-between">
                 <div>
-                    <h4 class="fs-16 fw-semibold mb-1 mb-md-2">Detail Project</h4>
+                    <h4 class="fs-16 fw-semibold mb-1 mb-md-2">Detail Jurnal</h4>
                 </div>
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="{{ url('/index') }}">R&D</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('/index') }}">My Journal</a></li>
                         <li class="breadcrumb-item">
-                            <a href="{{ url('/event') }}">Event</a>
+                            <a href="{{ url('/event') }}">Jurnal Harian</a>
                         </li>
-                        <li class="breadcrumb-item active">Detail</li>
+                        <li class="breadcrumb-item active">Detail Jurnal</li>
                     </ol>
                 </div>
             </div>

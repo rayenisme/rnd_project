@@ -58,27 +58,13 @@ class HomeController extends Controller
         try {
 
         $tasks = DB::table('tasks as t')
-                ->leftJoin('departments as d', 't.department_id', '=', 'd.id')
-                ->select(
-                    't.*',
-                    'd.name as department_name',
-                    DB::raw("
-                        (
-                            SELECT COALESCE(
-                                STRING_AGG(
-                                    TO_CHAR(tl.created_at, 'DD-MM-YYYY') || ' - ' || tl.description,
-                                    E'\n'
-                                    ORDER BY tl.created_at ASC
-                                ),
-                                ''
-                            )
-                            FROM task_logs tl
-                            WHERE tl.task_id = t.id
-                        ) AS timeline
-                    ")
-                )
-                ->orderBy('t.created_at', 'desc')
-                ->get();    
+    ->leftJoin('departments as d', 't.department_id', '=', 'd.id')
+    ->select(
+        't.*',
+        'd.name as department_name'
+    )
+    ->orderBy('t.created_at', 'desc')
+    ->get();
                 
         $departments = Departments::orderBy('name')->get();
 

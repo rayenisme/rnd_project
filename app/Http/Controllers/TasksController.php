@@ -30,18 +30,13 @@ public function store(Request $request)
         'name' => 'required|string|max:255',
         'department_id' => 'required|exists:departments,id',
         'pic_name' => 'required|string|max:255',
-        'image' => 'required|array|min:1',
-        'image.*' => 'image|mimes:jpg,jpeg,png|max:5120',
-                ], [
-                    'image.required' => 'Foto wajib diupload minimal 1',
-                    'image.min' => 'Minimal upload 1 foto',
-                ]);
+        'image' => 'nullable|array',
+        'image.*' => 'image|mimes:jpg,jpeg,png|max:5120']);
 
     DB::beginTransaction();
 
     try {
 
-        // 🔹 Generate kode
         $month = now()->format('m');
         $year  = now()->format('Y');
 

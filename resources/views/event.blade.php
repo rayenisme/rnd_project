@@ -129,9 +129,9 @@
                                             <label class="form-label mb-1">Foto</label>
 
                                             <input class="form-control" type="file" name="image[]" id="formFile"
-                                                multiple>
+                                                multiple accept="image/*">
                                             <div class="invalid-feedback" id="imageError">
-                                                Foto wajib diupload minimal 1
+                                                Format gambar tidak valid / ukuran terlalu besar
                                             </div>
 
                                             <!-- Preview WhatsApp Style -->
@@ -183,9 +183,7 @@
                                     <th class="text-center">Nomor Project</th>
                                     <th class="text-center">Subject</th>
                                     <th class="text-center">Departemen</th>
-                                    <th class="d-none">Priority</th>
                                     <th class="text-center">Status</th>
-                                    <th class="d-none">Timeline</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -198,7 +196,6 @@
                                         <td>{{ $task->code }}</td>
                                         <td>{{ $task->name }}</td>
                                         <td>{{ $task->department_name }}</td>
-                                        <td class="d-none">{{ $task->is_urgent ? 'Urgent' : 'Normal' }}</td>
                                         <td>
                                             <span class="d-none">{{ $task->is_urgent ? 'Urgent' : 'Normal' }}</span>
                                             @if (strtolower($task->status) == 'in progress')
@@ -217,7 +214,6 @@
                                                 </span>
                                             @endif
                                         </td>
-                                        <td class="d-none">{!! nl2br(e($task->timeline)) !!}</td>
                                         <td class="text-center">
                                             <a href="{{ route('event.show', $task->id) }}" class="btn btn-info btn-sm">
                                                 <i class="fas fa-eye me-1"></i>
@@ -416,24 +412,14 @@
                 const files = imageInput.files;
 
                 if (!files || files.length === 0) {
-                    imageInput.classList.add("is-invalid");
+                    imageInput.classList.remove("is-invalid");
                     imageInput.classList.remove("is-valid");
-
-                    if (showAlert) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Foto belum dipilih',
-                            text: 'Minimal upload 1 foto'
-                        });
-                    }
-                    return false;
+                    return true;
                 }
 
-                // validasi setiap file
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
 
-                    // tipe file
                     if (!file.type.startsWith('image/')) {
                         if (showAlert) {
                             Swal.fire({
@@ -445,7 +431,6 @@
                         return false;
                     }
 
-                    // size max 5MB
                     if (file.size > 5 * 1024 * 1024) {
                         if (showAlert) {
                             Swal.fire({
@@ -460,44 +445,49 @@
 
                 imageInput.classList.remove("is-invalid");
                 imageInput.classList.add("is-valid");
+
                 return true;
             }
 
-            department.addEventListener("change", () => validateDepartment(false));
-            pic.addEventListener("input", () => validatePic(false));
-            subject.addEventListener("input", () => validateSubject(false));
+            imageInput.classList.remove("is-invalid");
+            imageInput.classList.add("is-valid");
+            return true;
+        }
 
-            // ===== SUBMIT =====
-            form.addEventListener("submit", function(e) {
+        department.addEventListener("change", () => validateDepartment(false)); pic.addEventListener("input", () =>
+            validatePic(false)); subject.addEventListener("input", () => validateSubject(false));
 
-                isSubmitted = true;
+        // ===== SUBMIT =====
+        form.addEventListener("submit", function(e) {
 
-                // cek satu per satu (alert hanya muncul di sini)
-                if (!validateDepartment(true)) {
-                    e.preventDefault();
-                    department.focus();
-                    return;
-                }
+            isSubmitted = true;
 
-                if (!validatePic(true)) {
-                    e.preventDefault();
-                    pic.focus();
-                    return;
-                }
+            // cek satu per satu (alert hanya muncul di sini)
+            if (!validateDepartment(true)) {
+                e.preventDefault();
+                department.focus();
+                return;
+            }
 
-                if (!validateSubject(true)) {
-                    e.preventDefault();
-                    subject.focus();
-                    return;
-                }
+            if (!validatePic(true)) {
+                e.preventDefault();
+                pic.focus();
+                return;
+            }
 
-                if (!validateImage(true)) {
-                    e.preventDefault();
-                    imageInput.focus();
-                    return;
-                }
+            if (!validateSubject(true)) {
+                e.preventDefault();
+                subject.focus();
+                return;
+            }
 
-            });
+            if (!validateImage(true)) {
+                e.preventDefault();
+                imageInput.focus();
+                return;
+            }
+
+        });
 
         });
     </script>
@@ -559,7 +549,7 @@
 
                 columnDefs: [{
                     orderable: false,
-                    targets: [1, 2, 3, 4, 5, 6, 7, 8]
+                    targets: [1, 2, 3, 4, 5]
                 }]
             });
 
@@ -598,7 +588,7 @@
                 let index = th.index();
                 let title = th.data('title');
 
-                if (index === 0 || index === 8) return;
+                if (index === 0 || index === 6) return;
 
                 if (th.find('input, select').length > 0) return;
 
@@ -624,7 +614,7 @@
                         table.column(index).search($(this).val()).draw();
                     });
 
-                } else if (index === 6) {
+                } else if (index === 5) {
 
                     let select = $(`
                 <select class="form-control form-control-sm">
